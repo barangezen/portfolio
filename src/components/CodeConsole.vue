@@ -68,6 +68,119 @@ export default {
           return ''
         }
       },
+      music: {
+        description: 'Control space ambient music player',
+        action: (args) => {
+          if (!args || args.length === 0) {
+            return `=== Music Player Controls ===\\n\\nUsage: music <command> [value]\\n\\nCommands:\\n  on/start    - Start music player\\n  off/stop    - Stop music player\\n  status      - Show current status\\n  volume <n>  - Set volume (0-100)\\n  track <name> - Change track\\n  list        - List available tracks\\n\\nExamples:\\n  music on\\n  music volume 75\\n  music track deep_space`
+          }
+
+          const subCommand = args[0].toLowerCase()
+          
+          // Get the sound manager element
+          const soundManager = document.querySelector('.cyber-sound-manager')
+          if (!soundManager) {
+            return 'Error: Music system not initialized'
+          }
+
+          // Get Vue component instance
+          const soundManagerComponent = soundManager.__vueParentComponent
+          if (!soundManagerComponent) {
+            return 'Error: Cannot access music controls'
+          }
+
+          const musicState = soundManagerComponent.ctx || soundManagerComponent.exposed || soundManagerComponent.setupState
+          
+          switch (subCommand) {
+            case 'on':
+            case 'start': {
+              if (musicState.isEnabled) {
+                return '♫ Music is already playing: ' + musicState.currentTrack.replace('_', ' ').toUpperCase()
+              } else {
+                // Find and click the music toggle button
+                const toggleButton = document.querySelector('.sound-toggle')
+                if (toggleButton) {
+                  toggleButton.click()
+                  return '♫ Music started: ' + musicState.currentTrack.replace('_', ' ').toUpperCase()
+                } else {
+                  return 'Error: Cannot access music controls'
+                }
+              }
+            }
+
+            case 'off':
+            case 'stop': {
+              if (!musicState.isEnabled) {
+                return '♫ Music is already stopped'
+              } else {
+                const toggleButton = document.querySelector('.sound-toggle')
+                if (toggleButton) {
+                  toggleButton.click()
+                  return '♫ Music stopped'
+                } else {
+                  return 'Error: Cannot access music controls'
+                }
+              }
+            }
+
+            case 'status': {
+              const status = musicState.isEnabled ? 'PLAYING' : 'STOPPED'
+              const track = musicState.currentTrack.replace('_', ' ').toUpperCase()
+              const vol = musicState.volume
+              const bpm = musicState.currentBPM
+              return `=== Music Player Status ===\\n\\nStatus: ${status}\\nTrack: ${track}\\nVolume: ${vol}%\\nBPM: ${bpm}\\n\\nSpace ambient system online 🌌`
+            }
+
+            case 'volume': {
+              if (args.length < 2) {
+                return 'Usage: music volume <0-100>\\nCurrent volume: ' + musicState.volume + '%'
+              }
+              const newVolume = parseInt(args[1])
+              if (isNaN(newVolume) || newVolume < 0 || newVolume > 100) {
+                return 'Error: Volume must be a number between 0 and 100'
+              }
+              
+              // Update volume
+              const volumeSlider = document.querySelector('.volume-slider')
+              if (volumeSlider) {
+                volumeSlider.value = newVolume
+                volumeSlider.dispatchEvent(new Event('input', { bubbles: true }))
+                return `♫ Volume set to ${newVolume}%`
+              } else {
+                return 'Error: Cannot access volume controls'
+              }
+            }
+
+            case 'track': {
+              if (args.length < 2) {
+                return 'Usage: music track <track_name>\\nAvailable tracks: deep_space, nebula_drift, cosmic_void'
+              }
+              const trackName = args[1].toLowerCase()
+              const validTracks = ['deep_space', 'nebula_drift', 'cosmic_void']
+              
+              if (!validTracks.includes(trackName)) {
+                return 'Error: Invalid track name\\nAvailable tracks: ' + validTracks.join(', ')
+              }
+              
+              // Update track
+              const trackDropdown = document.querySelector('.track-dropdown')
+              if (trackDropdown) {
+                trackDropdown.value = trackName
+                trackDropdown.dispatchEvent(new Event('change', { bubbles: true }))
+                return `♫ Changed to track: ${trackName.replace('_', ' ').toUpperCase()}`
+              } else {
+                return 'Error: Cannot access track controls'
+              }
+            }
+
+            case 'list':
+              return `=== Available Space Ambient Tracks ===\\n\\ndeep_space    - Deep harmonic drones in vast space\\nnebula_drift  - Ethereal wisps through stellar clouds\\ncosmic_void   - Minimal atmospheres of empty space\\n\\nUsage: music track <name>`
+
+            default:
+              return 'Unknown music command: ' + subCommand + '\\nType "music" for help'
+          }
+        }
+      },
       games: {
         description: 'List and play available games',
         action: (args) => {
@@ -533,34 +646,6 @@ o'')}____//
       return false;
     }
 
-    const handleKeyPress = (event) => {
-      const key = event.key.toLowerCase();
-      const originalKey = event.key;
-
-      const isSnakeActive = !!activeGames.value.snake;
-
-      if (isSnakeActive) {
-        if (['w', 'a', 's', 'd'].includes(key)) {
-          event.preventDefault();
-          handleGameInput('snake', key);
-          return;
-        }
-      }
-
-      if (originalKey === 'Enter') {
-        executeCommand();
-      } else if (originalKey === 'ArrowUp') {
-        event.preventDefault();
-        navigateHistory(-1);
-      } else if (originalKey === 'ArrowDown') {
-        event.preventDefault();
-        navigateHistory(1);
-      } else if (originalKey === 'Tab') {
-        event.preventDefault();
-        handleTabCompletion();
-      }
-    };
-
     const executeCommand = async () => {
       const enteredCommandValue = currentCommand.value.trim();
       const cmd = enteredCommandValue.toLowerCase();
@@ -570,6 +655,9 @@ o'')}____//
         // Or if cmd is truly empty for other cases
         if (!cmd) return;
       }
+      
+      // Play command execute sound
+      playSound('execute')
       
       addToHistory(currentCommand.value, true); // Add the raw command (untrimmed, original case)
       commandBuffer.value.push(currentCommand.value);
@@ -607,15 +695,139 @@ o'')}____//
         const response = await commandDefinition.action(args);
         if (response) {
           addToHistory(response, false);
+          // Play success sound for valid commands
+          playSound('success')
         }
       } else {
         addToHistory('Command not found: ' + mainCmd + '. Type \'help\' for available commands.', false);
+        // Play error sound for invalid commands
+        playSound('error')
       }
 
       currentCommand.value = '';
       await nextTick();
       scrollToBottom();
     }
+
+    const playSound = (type) => {
+      // Create cyberpunk sound effects using Web Audio API
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        
+        const soundEffects = {
+          type: () => {
+            const oscillator = audioContext.createOscillator()
+            const gainNode = audioContext.createGain()
+            
+            oscillator.type = 'square'
+            oscillator.frequency.setValueAtTime(800 + Math.random() * 400, audioContext.currentTime)
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime)
+            gainNode.gain.linearRampToValueAtTime(0.02, audioContext.currentTime + 0.01)
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03)
+            
+            oscillator.connect(gainNode)
+            gainNode.connect(audioContext.destination)
+            
+            oscillator.start(audioContext.currentTime)
+            oscillator.stop(audioContext.currentTime + 0.03)
+          },
+          execute: () => {
+            const oscillator = audioContext.createOscillator()
+            const gainNode = audioContext.createGain()
+            
+            oscillator.type = 'sawtooth'
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime)
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.2)
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime)
+            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01)
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2)
+            
+            oscillator.connect(gainNode)
+            gainNode.connect(audioContext.destination)
+            
+            oscillator.start(audioContext.currentTime)
+            oscillator.stop(audioContext.currentTime + 0.2)
+          },
+          success: () => {
+            const oscillator = audioContext.createOscillator()
+            const gainNode = audioContext.createGain()
+            
+            oscillator.type = 'sine'
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime)
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.1)
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime)
+            gainNode.gain.linearRampToValueAtTime(0.05, audioContext.currentTime + 0.01)
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1)
+            
+            oscillator.connect(gainNode)
+            gainNode.connect(audioContext.destination)
+            
+            oscillator.start(audioContext.currentTime)
+            oscillator.stop(audioContext.currentTime + 0.1)
+          },
+          error: () => {
+            const oscillator = audioContext.createOscillator()
+            const gainNode = audioContext.createGain()
+            
+            oscillator.type = 'sawtooth'
+            oscillator.frequency.setValueAtTime(150, audioContext.currentTime)
+            oscillator.frequency.exponentialRampToValueAtTime(75, audioContext.currentTime + 0.3)
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime)
+            gainNode.gain.linearRampToValueAtTime(0.08, audioContext.currentTime + 0.01)
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3)
+            
+            oscillator.connect(gainNode)
+            gainNode.connect(audioContext.destination)
+            
+            oscillator.start(audioContext.currentTime)
+            oscillator.stop(audioContext.currentTime + 0.3)
+          }
+        }
+
+        if (soundEffects[type]) {
+          soundEffects[type]()
+        }
+      } catch (error) {
+        // Silently fail if Web Audio API is not supported
+      }
+    }
+
+    const handleKeyPress = (event) => {
+      const key = event.key.toLowerCase();
+      const originalKey = event.key;
+
+      const isSnakeActive = !!activeGames.value.snake;
+
+      if (isSnakeActive) {
+        if (['w', 'a', 's', 'd'].includes(key)) {
+          event.preventDefault();
+          handleGameInput('snake', key);
+          return;
+        }
+      }
+
+      // Play typing sound for printable characters
+      if (originalKey.length === 1 && originalKey.match(/[a-zA-Z0-9\s]/)) {
+        playSound('type')
+      }
+
+      if (originalKey === 'Enter') {
+        executeCommand();
+      } else if (originalKey === 'ArrowUp') {
+        event.preventDefault();
+        navigateHistory(-1);
+      } else if (originalKey === 'ArrowDown') {
+        event.preventDefault();
+        navigateHistory(1);
+      } else if (originalKey === 'Tab') {
+        event.preventDefault();
+        handleTabCompletion();
+      }
+    };
 
     const navigateHistory = (direction) => {
       if (commandBuffer.value.length === 0) return

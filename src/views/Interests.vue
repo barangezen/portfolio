@@ -23,9 +23,6 @@
               <div class="level-info">
                 <span class="level-label">ACCESS_LEVEL:</span>
                 <span class="level-value">ROAD_WARRIOR</span>
-                <div class="level-bar">
-                  <div class="level-fill" style="width: 85%"></div>
-                </div>
               </div>
               <div class="achievements">
                 <div class="command-line">
@@ -63,9 +60,6 @@
               <div class="level-info">
                 <span class="level-label">ACCESS_LEVEL:</span>
                 <span class="level-value">NATURE_EXPLORER</span>
-                <div class="level-bar">
-                  <div class="level-fill" style="width: 75%"></div>
-                </div>
               </div>
               <div class="achievements">
                 <div class="command-line">
@@ -103,9 +97,6 @@
               <div class="level-info">
                 <span class="level-label">ACCESS_LEVEL:</span>
                 <span class="level-value">WORLD_EXPLORER</span>
-                <div class="level-bar">
-                  <div class="level-fill" style="width: 80%"></div>
-                </div>
               </div>
               <div class="achievements">
                 <div class="command-line">
@@ -256,36 +247,6 @@ export default {
   .level-value {
     color: var(--cyber-blue);
     font-size: 0.9rem;
-  }
-  
-  .level-bar {
-    height: 8px;
-    background: rgba(0, 255, 65, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 0.5rem;
-    
-    .level-fill {
-      height: 100%;
-      background: var(--matrix-green);
-      position: relative;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.4),
-          transparent
-        );
-        animation: level-shine 2s infinite;
-      }
-    }
   }
 }
 

@@ -42,6 +42,7 @@
                 <span class="tech-badge">Valtio</span>
                 <span class="tech-badge">Tanstack Query</span>
                 <span class="tech-badge">Headless APIs</span>
+                <span class="tech-badge">Web Components</span>
                 <span class="tech-badge">Storybook</span>
               </div>
             </div>
@@ -160,12 +161,6 @@
                 <span class="prompt">>></span>
                 <span class="category-name">FRONTEND_SKILLS</span>
               </div>
-              <div class="skill-meter">
-                <div class="meter-bar">
-                  <div class="meter-fill" style="width: 95%"></div>
-                </div>
-                <span class="meter-value">95%</span>
-              </div>
               <ul class="skill-list">
                 <li><span class="bullet">></span> JavaScript / TypeScript</li>
                 <li><span class="bullet">></span> React / Next.js</li>
@@ -180,12 +175,6 @@
               <div class="skill-header">
                 <span class="prompt">>></span>
                 <span class="category-name">BACKEND_SKILLS</span>
-              </div>
-              <div class="skill-meter">
-                <div class="meter-bar">
-                  <div class="meter-fill" style="width: 85%"></div>
-                </div>
-                <span class="meter-value">85%</span>
               </div>
               <ul class="skill-list">
                 <li><span class="bullet">></span> Node.js / Express</li>
@@ -376,45 +365,6 @@ export default {
   color: var(--matrix-green);
 }
 
-.skill-meter {
-  margin-bottom: 1rem;
-  
-  .meter-bar {
-    height: 8px;
-    background: rgba(0, 255, 65, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
-    
-    .meter-fill {
-      height: 100%;
-      background: var(--matrix-green);
-      position: relative;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.4),
-          transparent
-        );
-        animation: meter-shine 2s infinite;
-      }
-    }
-  }
-  
-  .meter-value {
-    color: var(--cyber-blue);
-    font-size: 0.9rem;
-  }
-}
-
 .skill-list {
   list-style: none;
   padding: 0;
@@ -437,15 +387,6 @@ export default {
   }
   50% {
     opacity: 0.5;
-  }
-}
-
-@keyframes meter-shine {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
   }
 }
 

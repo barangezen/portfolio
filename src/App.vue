@@ -3,10 +3,19 @@
     <PageLoader :is-loading="isLoading" />
     <CyberCursor />
     
+    <!-- Cyberpunk Sound System -->
+    <CyberSoundManager />
+    
+    <!-- Interactive Neon Particles -->
+    <NeonParticles />
+    
+    <!-- Enhanced Cyberpunk Background -->
+    <CyberBackground />
+    
     <!-- Matrix-style background animation -->
     <div class="matrix-bg">
       <div v-for="n in 50" :key="n" class="matrix-line" :style="{ animationDelay: `${n * 0.1}s` }">
-        {{ randomBinary() }}
+        {{ Math.random() > 0.7 ? randomMatrix() : randomBinary() }}
       </div>
     </div>
 
@@ -64,6 +73,9 @@
 <script>
 import CyberCursor from './components/CyberCursor.vue'
 import PageLoader from './components/PageLoader.vue'
+import CyberBackground from './components/CyberBackground.vue'
+import NeonParticles from './components/NeonParticles.vue'
+import CyberSoundManager from './components/CyberSoundManager.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -71,7 +83,10 @@ export default {
   name: 'App',
   components: {
     CyberCursor,
-    PageLoader
+    PageLoader,
+    CyberBackground,
+    NeonParticles,
+    CyberSoundManager
   },
   setup() {
     const isLoading = ref(true)
@@ -109,10 +124,18 @@ export default {
       })
     }
 
+    const randomBinary = () => Array.from({ length: 20 }, () => Math.random() > 0.5 ? '1' : '0').join('')
+    
+    const randomMatrix = () => {
+      const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
+      return Array.from({ length: 15 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+    }
+
     return {
       isLoading,
       transitionName,
-      randomBinary: () => Array.from({ length: 20 }, () => Math.random() > 0.5 ? '1' : '0').join(''),
+      randomBinary,
+      randomMatrix,
       beforeLeave,
       enter,
       afterEnter

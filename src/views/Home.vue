@@ -36,7 +36,6 @@ export default {
 }
 
 .home {
-  background-color: var(--dark-bg);
   min-height: 100vh;
   padding: 2rem;
   color: var(--text-color);
