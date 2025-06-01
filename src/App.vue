@@ -42,13 +42,49 @@
           </router-link>
         </div>
 
-        <div class="nav-toggle" @click="toggleMobileNav">
+        <div class="nav-toggle" :class="{ 'nav-toggle-open': mobileNavOpen }" @click="toggleMobileNav">
           <span></span>
           <span></span>
           <span></span>
         </div>
       </div>
     </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" :class="{ 'mobile-nav-active': mobileNavOpen }" @click="toggleMobileNav">
+      <div class="mobile-nav-menu" @click.stop>
+        <div class="mobile-nav-header">
+          <div class="mobile-logo">
+            <span class="logo-text">Baran Gezen</span>
+            <div class="logo-dot"></div>
+          </div>
+          <button class="mobile-nav-close" @click="toggleMobileNav">
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+        
+        <div class="mobile-nav-links">
+          <router-link 
+            v-for="(route, index) in routes" 
+            :key="route.path" 
+            :to="route.path" 
+            class="mobile-nav-item"
+            :style="{ '--delay': `${index * 0.1}s` }"
+            @click="toggleMobileNav"
+          >
+            <span class="mobile-nav-text">{{ route.name }}</span>
+            <div class="mobile-nav-arrow">→</div>
+          </router-link>
+        </div>
+        
+        <div class="mobile-nav-footer">
+          <div class="footer-info">
+            <div class="footer-version">Portfolio v2.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content" :class="{ 'content-visible': !isLoading }">
@@ -239,6 +275,9 @@ export default {
         isTransitioning.value = true
         transitionName.value = 'fade'
         
+        // Close mobile nav on route change
+        mobileNavOpen.value = false
+        
         // Reset transition flag quickly
         setTimeout(() => {
           isTransitioning.value = false
@@ -249,6 +288,22 @@ export default {
     // Mobile navigation toggle
     const toggleMobileNav = () => {
       mobileNavOpen.value = !mobileNavOpen.value
+    }
+
+    // Handle body scroll lock when mobile nav is open
+    watch(mobileNavOpen, (isOpen) => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
+    })
+
+    // Handle keyboard events
+    const handleKeydown = (e) => {
+      if (e.key === 'Escape' && mobileNavOpen.value) {
+        mobileNavOpen.value = false
+      }
     }
 
     // Simplified transition handlers - no positioning
@@ -272,6 +327,7 @@ export default {
     onMounted(() => {
       window.addEventListener('scroll', updateScrollProgress)
       window.addEventListener('mousemove', updateCursor)
+      window.addEventListener('keydown', handleKeydown)
       
       // Add cursor interaction listeners with better event handling
       document.addEventListener('mouseover', handleMouseEnter)
@@ -281,10 +337,14 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('scroll', updateScrollProgress)
       window.removeEventListener('mousemove', updateCursor)
+      window.removeEventListener('keydown', handleKeydown)
       
       // Remove cursor interaction listeners
       document.removeEventListener('mouseover', handleMouseEnter)
       document.removeEventListener('mouseout', handleMouseLeave)
+      
+      // Restore body scroll on unmount
+      document.body.style.overflow = ''
     })
 
     return {
@@ -788,6 +848,7 @@ body {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(10px);
+  z-index: 1001;
   
   @media (max-width: 768px) {
     display: flex;
@@ -810,6 +871,27 @@ body {
       
       &:nth-child(3) {
         transform: translateX(-3px);
+      }
+    }
+  }
+  
+  &.nav-toggle-open {
+    background: rgba(255, 255, 255, 0.1);
+    
+    span {
+      background: var(--accent-primary);
+      
+      &:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      
+      &:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+      
+      &:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
       }
     }
   }
@@ -1326,6 +1408,410 @@ html {
   }
   50% {
     transform: scale(1.05);
+  }
+}
+
+// Mobile Navigation Overlay
+.mobile-nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  @media (min-width: 769px) {
+    display: none;
+  }
+  
+  &.mobile-nav-active {
+    opacity: 1;
+    visibility: visible;
+    
+    .mobile-nav-menu {
+      transform: translateX(0);
+      box-shadow: 
+        -20px 0 60px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(16, 185, 129, 0.1);
+    }
+  }
+  
+  // Animated background pattern
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(6, 214, 160, 0.08) 0%, transparent 50%);
+    opacity: 0;
+    animation: fadeInBackground 0.8s ease-out 0.3s forwards;
+  }
+}
+
+.mobile-nav-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 380px;
+  height: 100vh;
+  background: linear-gradient(135deg, 
+    var(--bg-secondary) 0%, 
+    rgba(17, 17, 17, 0.98) 50%, 
+    var(--bg-secondary) 100%
+  );
+  border-left: 1px solid var(--border-primary);
+  transform: translateX(100%);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  
+  @media (max-width: 400px) {
+    max-width: 100%;
+  }
+  
+  // Glass effect overlay
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.05) 0%, 
+      transparent 50%, 
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  // Animated border effect
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+      var(--accent-primary), 
+      var(--accent-secondary), 
+      var(--accent-tertiary)
+    );
+    opacity: 0;
+    animation: slideDownBorder 0.8s ease-out 0.4s forwards;
+  }
+}
+
+.mobile-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-primary);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 2;
+  
+  // Animated underline
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 2rem;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    animation: expandWidth 0.6s ease-out 0.5s forwards;
+  }
+  
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideInLeft 0.6s ease-out 0.3s forwards;
+    
+    .logo-text {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--glow-primary);
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+.mobile-nav-close {
+  position: relative;
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(20px) rotate(180deg);
+  animation: slideInRight 0.6s ease-out 0.4s forwards;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    transform: scale(1.05) rotate(0deg);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background: var(--text-secondary);
+    transition: all 0.3s ease;
+    border-radius: 1px;
+    
+    &:nth-child(1) {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+    
+    &:nth-child(2) {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
+  
+  &:hover span {
+    background: var(--accent-primary);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+}
+
+.mobile-nav-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 2rem 2rem;
+  position: relative;
+  z-index: 2;
+  
+  @media (max-width: 400px) {
+    padding: 1rem 1.5rem 2rem;
+  }
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.75rem;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateX(50px);
+  animation: slideInMobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--delay);
+  position: relative;
+  overflow: hidden;
+  
+  // Animated background on hover
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(16, 185, 129, 0.1) 50%, 
+      transparent 100%
+    );
+    transition: left 0.5s ease;
+  }
+  
+  &:hover, &.router-link-active {
+    color: var(--text-primary);
+    background: rgba(16, 185, 129, 0.12);
+    border-color: var(--accent-primary);
+    transform: translateX(0) scale(1.02);
+    box-shadow: 
+      0 8px 32px rgba(16, 185, 129, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    
+    &:before {
+      left: 100%;
+    }
+    
+    .mobile-nav-text {
+      color: var(--accent-primary);
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    
+    .mobile-nav-arrow {
+      color: var(--accent-primary);
+      transform: translateX(8px) scale(1.2);
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+  }
+  
+  &.router-link-active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--accent-secondary);
+    
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 0 2px 2px 0;
+    }
+  }
+  
+  .mobile-nav-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    letter-spacing: 0.01em;
+  }
+  
+  .mobile-nav-arrow {
+    font-size: 1.3rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--text-muted);
+    font-weight: bold;
+  }
+}
+
+// Add menu footer with additional info
+.mobile-nav-footer {
+  padding: 2rem;
+  border-top: 1px solid var(--border-primary);
+  background: rgba(255, 255, 255, 0.02);
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInUp 0.6s ease-out 0.8s forwards;
+  
+  .footer-info {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    
+    .footer-version {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      
+      a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          color: var(--accent-primary);
+          background: rgba(16, 185, 129, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Enhanced animations
+@keyframes fadeInBackground {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownBorder {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes expandWidth {
+  to {
+    width: calc(100% - 4rem);
+  }
+}
+
+@keyframes slideInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInMobile {
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 </style>
