@@ -1,17 +1,17 @@
 <template>
-  <div class="cyber-background">
-    <!-- Floating Particles -->
-    <div class="particles-container">
+  <div class="cyber-background" :class="{ 'performance-mode': performanceMode }">
+    <!-- Floating Particles (Optimized) -->
+    <div class="particles-container" v-if="!performanceMode || particlesEnabled">
       <div 
-        v-for="n in 30" 
+        v-for="n in particleCount" 
         :key="'particle-' + n"
         class="particle"
         :style="getParticleStyle(n)"
       ></div>
     </div>
 
-    <!-- Circuit Board Patterns -->
-    <div class="circuit-container">
+    <!-- Circuit Board Patterns (Optimized) -->
+    <div class="circuit-container" v-if="!performanceMode || circuitsEnabled">
       <svg class="circuit-svg" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="circuitGlow" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -21,53 +21,42 @@
           </linearGradient>
         </defs>
         
-        <!-- Circuit Lines -->
+        <!-- Circuit Lines (Reduced for performance) -->
         <g class="circuit-lines">
-          <path d="M0,200 L300,200 L300,400 L600,400" class="circuit-path" />
-          <path d="M800,100 L1200,100 L1200,300 L1600,300" class="circuit-path" />
-          <path d="M200,600 L500,600 L500,800 L900,800" class="circuit-path" />
-          <path d="M1100,500 L1400,500 L1400,700 L1800,700" class="circuit-path" />
-          <path d="M0,900 L400,900 L400,1000 L800,1000" class="circuit-path" />
+          <path v-for="path in circuitPaths" :key="path.id" :d="path.d" class="circuit-path" :style="{ animationDelay: `${path.delay}s` }" />
         </g>
         
-        <!-- Circuit Nodes -->
+        <!-- Circuit Nodes (Reduced for performance) -->
         <g class="circuit-nodes">
-          <circle cx="300" cy="200" r="3" class="circuit-node" />
-          <circle cx="600" cy="400" r="3" class="circuit-node" />
-          <circle cx="1200" cy="100" r="3" class="circuit-node" />
-          <circle cx="1600" cy="300" r="3" class="circuit-node" />
-          <circle cx="500" cy="600" r="3" class="circuit-node" />
-          <circle cx="900" cy="800" r="3" class="circuit-node" />
-          <circle cx="1400" cy="500" r="3" class="circuit-node" />
-          <circle cx="1800" cy="700" r="3" class="circuit-node" />
+          <circle v-for="node in circuitNodes" :key="node.id" :cx="node.x" :cy="node.y" :r="node.r" class="circuit-node" :style="{ animationDelay: `${node.delay}s` }" />
         </g>
       </svg>
     </div>
 
-    <!-- Data Streams -->
-    <div class="data-streams">
+    <!-- Data Streams (Optimized) -->
+    <div class="data-streams" v-if="!performanceMode || streamsEnabled">
       <div 
-        v-for="n in 8" 
+        v-for="n in streamCount" 
         :key="'stream-' + n"
         class="data-stream"
         :style="getStreamStyle(n)"
       >
-        <span class="data-text">{{ generateHexData() }}</span>
+        <span class="data-text">{{ getCachedHexData(n) }}</span>
       </div>
     </div>
 
-    <!-- Energy Waves -->
-    <div class="energy-waves">
+    <!-- Energy Waves (Reduced) -->
+    <div class="energy-waves" v-if="!performanceMode">
       <div 
-        v-for="n in 3" 
+        v-for="n in 2" 
         :key="'wave-' + n"
         class="energy-wave"
-        :style="{ animationDelay: `${n * 2}s` }"
+        :style="{ animationDelay: `${n * 3}s` }"
       ></div>
     </div>
 
-    <!-- Scanning Grid -->
-    <div class="scanning-grid">
+    <!-- Scanning Grid (Optimized) -->
+    <div class="scanning-grid" v-if="!performanceMode || gridEnabled">
       <div class="scan-line-vertical"></div>
       <div class="scan-line-horizontal"></div>
     </div>
@@ -75,46 +64,133 @@
 </template>
 
 <script>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
 export default {
   name: 'CyberBackground',
   setup() {
+    const performanceMode = ref(false)
+    const particlesEnabled = ref(true)
+    const circuitsEnabled = ref(true)
+    const streamsEnabled = ref(true)
+    const gridEnabled = ref(true)
+    
+    // Performance-based counts
+    const particleCount = computed(() => performanceMode.value ? 15 : 25)
+    const streamCount = computed(() => performanceMode.value ? 4 : 6)
+    
+    // Cached data
+    const hexDataCache = ref({})
+    const particleStyleCache = ref({})
+    const streamStyleCache = ref({})
+    
+    // Circuit patterns (pre-defined for performance)
+    const circuitPaths = ref([
+      { id: 1, d: "M0,200 L300,200 L300,400 L600,400", delay: 0 },
+      { id: 2, d: "M800,100 L1200,100 L1200,300 L1600,300", delay: 1 },
+      { id: 3, d: "M200,600 L500,600 L500,800 L900,800", delay: 2 },
+      { id: 4, d: "M1100,500 L1400,500 L1400,700 L1800,700", delay: 0.5 }
+    ])
+    
+    const circuitNodes = ref([
+      { id: 1, x: 300, y: 200, r: 3, delay: 0 },
+      { id: 2, x: 600, y: 400, r: 3, delay: 0.5 },
+      { id: 3, x: 1200, y: 100, r: 3, delay: 1 },
+      { id: 4, x: 1600, y: 300, r: 3, delay: 1.5 },
+      { id: 5, x: 500, y: 600, r: 3, delay: 2 },
+      { id: 6, x: 900, y: 800, r: 3, delay: 2.5 }
+    ])
+    
     const hexChars = '0123456789ABCDEF'
     
     const generateHexData = () => {
-      return Array.from({ length: 16 }, () => 
+      return Array.from({ length: 12 }, () => 
         hexChars[Math.floor(Math.random() * hexChars.length)]
       ).join('')
     }
-
-    const getParticleStyle = () => {
-      const size = Math.random() * 4 + 2
-      const left = Math.random() * 100
-      const animationDuration = Math.random() * 20 + 10
-      const animationDelay = Math.random() * 5
-      
-      return {
-        left: `${left}%`,
-        width: `${size}px`,
-        height: `${size}px`,
-        animationDuration: `${animationDuration}s`,
-        animationDelay: `${animationDelay}s`
+    
+    const getCachedHexData = (index) => {
+      if (!hexDataCache.value[index]) {
+        hexDataCache.value[index] = generateHexData()
       }
+      return hexDataCache.value[index]
+    }
+
+    const getParticleStyle = (index) => {
+      if (!particleStyleCache.value[index]) {
+        const size = Math.random() * 3 + 1.5
+        const left = Math.random() * 100
+        const animationDuration = Math.random() * 15 + 8
+        const animationDelay = Math.random() * 4
+        
+        particleStyleCache.value[index] = {
+          left: `${left}%`,
+          width: `${size}px`,
+          height: `${size}px`,
+          animationDuration: `${animationDuration}s`,
+          animationDelay: `${animationDelay}s`
+        }
+      }
+      return particleStyleCache.value[index]
     }
 
     const getStreamStyle = (index) => {
-      const left = (index * 12.5) + (Math.random() * 5)
-      const animationDuration = Math.random() * 8 + 4
-      const animationDelay = Math.random() * 3
+      if (!streamStyleCache.value[index]) {
+        const left = (index * 15) + (Math.random() * 8)
+        const animationDuration = Math.random() * 6 + 3
+        const animationDelay = Math.random() * 2
+        
+        streamStyleCache.value[index] = {
+          left: `${left}%`,
+          animationDuration: `${animationDuration}s`,
+          animationDelay: `${animationDelay}s`
+        }
+      }
+      return streamStyleCache.value[index]
+    }
+    
+    // Performance monitoring
+    let performanceCheckInterval
+    
+    const checkPerformance = () => {
+      // Simple performance check based on viewport and connection
+      const isLowEnd = window.navigator.hardwareConcurrency <= 4
+      const isSlowConnection = navigator.connection && navigator.connection.effectiveType === 'slow-2g'
+      const isSmallScreen = window.innerWidth < 768
       
-      return {
-        left: `${left}%`,
-        animationDuration: `${animationDuration}s`,
-        animationDelay: `${animationDelay}s`
+      performanceMode.value = isLowEnd || isSlowConnection || isSmallScreen
+      
+      // Disable heavy animations on low-end devices
+      if (performanceMode.value) {
+        particlesEnabled.value = !isSmallScreen
+        circuitsEnabled.value = true
+        streamsEnabled.value = !isSlowConnection
+        gridEnabled.value = true
       }
     }
 
+    onMounted(() => {
+      checkPerformance()
+      performanceCheckInterval = setInterval(checkPerformance, 5000)
+    })
+    
+    onUnmounted(() => {
+      if (performanceCheckInterval) {
+        clearInterval(performanceCheckInterval)
+      }
+    })
+
     return {
-      generateHexData,
+      performanceMode,
+      particlesEnabled,
+      circuitsEnabled,
+      streamsEnabled,
+      gridEnabled,
+      particleCount,
+      streamCount,
+      circuitPaths,
+      circuitNodes,
+      getCachedHexData,
       getParticleStyle,
       getStreamStyle
     }
@@ -132,13 +208,31 @@ export default {
   z-index: -2;
   overflow: hidden;
   pointer-events: none;
+  will-change: transform;
+  contain: layout style paint;
+  
+  &.performance-mode {
+    .particle {
+      animation-duration: 20s !important;
+    }
+    
+    .circuit-path {
+      animation: none;
+    }
+    
+    .data-stream {
+      animation-duration: 8s !important;
+    }
+  }
 }
 
-/* Floating Particles */
+/* Optimized Floating Particles */
 .particles-container {
   position: absolute;
   width: 100%;
   height: 100%;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .particle {
@@ -146,11 +240,12 @@ export default {
   background: var(--cyber-blue);
   border-radius: 50%;
   box-shadow: 
-    0 0 10px var(--cyber-blue),
-    0 0 20px var(--cyber-blue),
-    0 0 30px var(--cyber-blue);
-  animation: float-particle 15s linear infinite;
-  opacity: 0.6;
+    0 0 8px var(--cyber-blue),
+    0 0 16px var(--cyber-blue);
+  animation: float-particle 12s linear infinite;
+  opacity: 0.5;
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 
 @keyframes float-particle {
@@ -159,10 +254,10 @@ export default {
     opacity: 0;
   }
   10% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
   90% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
   100% {
     transform: translateY(-100px) rotate(360deg);
@@ -170,32 +265,37 @@ export default {
   }
 }
 
-/* Circuit Board Patterns */
+/* Optimized Circuit Board Patterns */
 .circuit-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  opacity: 0.3;
+  opacity: 0.25;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .circuit-svg {
   width: 100%;
   height: 100%;
+  will-change: transform;
 }
 
 .circuit-path {
   fill: none;
   stroke: var(--matrix-green);
   stroke-width: 1;
-  stroke-dasharray: 5, 5;
-  animation: circuit-flow 4s linear infinite;
+  stroke-dasharray: 4, 4;
+  animation: circuit-flow 6s linear infinite;
+  will-change: stroke-dashoffset;
 }
 
 .circuit-node {
   fill: var(--cyber-blue);
   stroke: var(--matrix-green);
   stroke-width: 1;
-  animation: node-pulse 2s ease-in-out infinite;
+  animation: node-pulse 3s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 @keyframes circuit-flow {
@@ -203,45 +303,49 @@ export default {
     stroke-dashoffset: 0;
   }
   100% {
-    stroke-dashoffset: -20;
+    stroke-dashoffset: 20;
   }
 }
 
 @keyframes node-pulse {
   0%, 100% {
-    r: 3;
-    fill-opacity: 0.8;
+    opacity: 0.6;
+    transform: scale(1);
   }
   50% {
-    r: 5;
-    fill-opacity: 1;
+    opacity: 1;
+    transform: scale(1.3);
   }
 }
 
-/* Data Streams */
+/* Optimized Data Streams */
 .data-streams {
   position: absolute;
   width: 100%;
   height: 100%;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .data-stream {
   position: absolute;
   top: -50px;
-  writing-mode: vertical-rl;
-  animation: data-flow 6s linear infinite;
+  writing-mode: vertical-lr;
+  color: var(--matrix-green);
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  opacity: 0.4;
+  animation: stream-fall 5s linear infinite;
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 
 .data-text {
-  color: var(--matrix-green);
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  opacity: 0.4;
   text-shadow: 0 0 5px var(--matrix-green);
-  letter-spacing: 2px;
+  will-change: transform;
 }
 
-@keyframes data-flow {
+@keyframes stream-fall {
   0% {
     transform: translateY(-100px);
     opacity: 0;
@@ -258,116 +362,128 @@ export default {
   }
 }
 
-/* Energy Waves */
+/* Optimized Energy Waves */
 .energy-waves {
   position: absolute;
   width: 100%;
   height: 100%;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .energy-wave {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100px;
-  height: 100px;
-  border: 2px solid var(--neon-pink);
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--cyber-blue);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: energy-pulse 6s ease-out infinite;
+  animation: energy-expand 4s ease-out infinite;
+  will-change: transform, opacity;
 }
 
-@keyframes energy-pulse {
+@keyframes energy-expand {
   0% {
-    width: 100px;
-    height: 100px;
-    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
   }
   100% {
-    width: 1000px;
-    height: 1000px;
+    transform: translate(-50%, -50%) scale(30);
     opacity: 0;
   }
 }
 
-/* Scanning Grid */
+/* Optimized Scanning Grid */
 .scanning-grid {
   position: absolute;
   width: 100%;
   height: 100%;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .scan-line-vertical {
   position: absolute;
+  top: 0;
+  left: 20%;
   width: 2px;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--cyber-blue),
-    transparent
-  );
-  animation: scan-vertical 8s linear infinite;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    var(--neon-pink) 45%, 
+    var(--cyber-blue) 55%, 
+    transparent 100%);
+  animation: scan-vertical 8s ease-in-out infinite;
+  will-change: transform;
 }
 
 .scan-line-horizontal {
   position: absolute;
+  top: 30%;
+  left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--neon-pink),
-    transparent
-  );
-  animation: scan-horizontal 6s linear infinite;
+  background: linear-gradient(to right, 
+    transparent 0%, 
+    var(--neon-pink) 45%, 
+    var(--cyber-blue) 55%, 
+    transparent 100%);
+  animation: scan-horizontal 10s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes scan-vertical {
-  0% {
-    left: -2px;
+  0%, 100% {
+    left: 10%;
+    opacity: 0.3;
   }
-  100% {
-    left: 100%;
+  50% {
+    left: 80%;
+    opacity: 0.8;
   }
 }
 
 @keyframes scan-horizontal {
-  0% {
-    top: -2px;
+  0%, 100% {
+    top: 20%;
+    opacity: 0.3;
   }
-  100% {
-    top: 100%;
+  50% {
+    top: 70%;
+    opacity: 0.8;
   }
 }
 
-/* Responsive adjustments */
+/* Mobile optimizations */
 @media (max-width: 768px) {
-  .particle {
-    width: 2px !important;
-    height: 2px !important;
-  }
-  
-  .data-text {
-    font-size: 10px;
-  }
-  
-  .energy-wave {
-    width: 50px;
-    height: 50px;
-  }
-  
-  @keyframes energy-pulse {
-    0% {
-      width: 50px;
-      height: 50px;
-      opacity: 1;
+  .cyber-background {
+    .particle {
+      animation-duration: 15s;
     }
-    100% {
-      width: 500px;
-      height: 500px;
-      opacity: 0;
+    
+    .circuit-path {
+      stroke-width: 0.5;
+      animation: none;
     }
+    
+    .data-stream {
+      font-size: 0.7rem;
+      animation-duration: 6s;
+    }
+    
+    .energy-wave {
+      animation: none;
+    }
+  }
+}
+
+/* High performance mode */
+@media (prefers-reduced-motion: reduce) {
+  .cyber-background * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
 </style> 
