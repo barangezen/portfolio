@@ -10,22 +10,6 @@
             My journey through different companies and technologies, building scalable solutions and growing as a developer
           </p>
         </div>
-        <div class="experience-summary">
-          <div class="summary-card">
-            <div class="summary-stat">
-              <span class="stat-number">3+</span>
-              <span class="stat-label">Years</span>
-            </div>
-            <div class="summary-stat">
-              <span class="stat-number">5</span>
-              <span class="stat-label">Companies</span>
-            </div>
-            <div class="summary-stat">
-              <span class="stat-number">50+</span>
-              <span class="stat-label">Projects</span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -237,35 +221,20 @@
             <h3>Frontend Development</h3>
           </div>
           <div class="skills-list">
-            <div class="skill-item">
+            <div class="skill-tag expert">
               <span class="skill-name">JavaScript / TypeScript</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 95%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag expert">
               <span class="skill-name">React / Next.js</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 90%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag advanced">
               <span class="skill-name">React Native</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 80%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag expert">
               <span class="skill-name">Redux / Zustand / Valtio</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 85%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag expert">
               <span class="skill-name">Tailwind / Sass</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 90%"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -276,35 +245,20 @@
             <h3>Backend Development</h3>
           </div>
           <div class="skills-list">
-            <div class="skill-item">
+            <div class="skill-tag expert">
               <span class="skill-name">Node.js / Express</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 85%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag advanced">
               <span class="skill-name">.Net / C#</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 75%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag advanced">
               <span class="skill-name">SQL</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 80%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag intermediate">
               <span class="skill-name">Entity Framework</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 70%"></div>
-              </div>
             </div>
-            <div class="skill-item">
+            <div class="skill-tag advanced">
               <span class="skill-name">Mongoose</span>
-              <div class="skill-bar">
-                <div class="skill-progress" style="width: 75%"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -371,24 +325,6 @@ export default {
       // Observe all animatable elements
       document.querySelectorAll('.timeline-item, .skill-category, .highlight-card').forEach(el => {
         observer.observe(el)
-      })
-
-      // Animate skill bars when they come into view
-      const skillObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const progressBars = entry.target.querySelectorAll('.skill-progress')
-            progressBars.forEach((bar, index) => {
-              setTimeout(() => {
-                bar.classList.add('animate-width')
-              }, index * 100)
-            })
-          }
-        })
-      }, observerOptions)
-
-      document.querySelectorAll('.skill-category').forEach(el => {
-        skillObserver.observe(el)
       })
     })
 
@@ -801,33 +737,43 @@ export default {
 }
 
 .skills-list {
-  .skill-item {
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .skill-tag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+    }
+    
+    &.expert {
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    &.advanced {
+      border-left: 4px solid var(--accent-secondary);
+    }
+    
+    &.intermediate {
+      border-left: 4px solid var(--accent-warm);
+    }
     
     .skill-name {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-primary);
-    }
-  }
-  
-  .skill-bar {
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-    
-    .skill-progress {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-primary), #8b5cf6);
-      border-radius: 3px;
-      width: 0;
-      transition: width 1s ease;
-      
-      &.animate-width {
-        width: var(--progress-width, 0%);
-      }
+      font-size: 0.95rem;
     }
   }
 }

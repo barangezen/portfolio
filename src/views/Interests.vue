@@ -57,7 +57,7 @@
             <div class="achievements">
               <div class="achievement-tag">Mountain Roads</div>
               <div class="achievement-tag">Night Rider</div>
-              <div class="achievement-tag">1000+ Miles</div>
+              <div class="achievement-tag">40000+ Kilometers</div>
             </div>
             
             <div class="status">
@@ -140,7 +140,6 @@
             </div>
             
             <div class="achievements">
-              <div class="achievement-tag">Globe Trotter</div>
               <div class="achievement-tag">Culture Seeker</div>
               <div class="achievement-tag">Food Explorer</div>
             </div>

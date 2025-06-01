@@ -68,6 +68,23 @@
       </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="modern-footer" :class="{ 'footer-visible': !isLoading }">
+      <div class="footer-content">
+        <div class="footer-text">
+          <span>Created by</span>
+          <span class="footer-name">Baran Gezen</span>
+          <span>using</span>
+          <span class="footer-tech">Vue.js</span>
+          <span>and</span>
+          <span class="footer-heart">❤️</span>
+        </div>
+        <div class="footer-year">
+          © {{ new Date().getFullYear() }}
+        </div>
+      </div>
+    </footer>
+
     <!-- Scroll Progress -->
     <div class="scroll-progress">
       <div class="progress-bar" :style="{ width: `${scrollProgress}%` }"></div>
@@ -1211,6 +1228,104 @@ html {
   50% { 
     transform: scale(1.3);
     opacity: 0.9;
+  }
+}
+
+// Modern Footer
+.modern-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 0;
+  margin-top: 4rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(20px);
+  
+  &.footer-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+}
+
+.footer-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+  
+  .footer-name {
+    color: var(--accent-primary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+      color: var(--accent-secondary);
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+  }
+  
+  .footer-tech {
+    color: var(--accent-secondary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+      color: var(--accent-primary);
+      text-shadow: 0 0 10px rgba(6, 214, 160, 0.5);
+    }
+  }
+  
+  .footer-heart {
+    color: #e91e63;
+    font-size: 1.1rem;
+    animation: pulse 2s infinite;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 8px rgba(233, 30, 99, 0.6));
+    }
+  }
+}
+
+.footer-year {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 </style>

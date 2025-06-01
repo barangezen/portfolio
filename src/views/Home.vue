@@ -124,17 +124,17 @@
     <!-- Stats Section -->
     <section class="stats-section">
       <div class="stats-grid">
-        <div class="stat-item" data-number="3+">
-          <div class="stat-number">3+</div>
-          <div class="stat-label">Years of Experience</div>
+        <div class="stat-item" data-number="∞">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Sprint Planning Sessions</div>
         </div>
-        <div class="stat-item" data-number="50+">
-          <div class="stat-number">50+</div>
-          <div class="stat-label">Projects Completed</div>
+        <div class="stat-item" data-number="∞">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">ChatGPT Requests</div>
         </div>
-        <div class="stat-item" data-number="100%">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Client Satisfaction</div>
+        <div class="stat-item" data-number="∞">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Git Commits</div>
         </div>
         <div class="stat-item" data-number="∞">
           <div class="stat-number">∞</div>
