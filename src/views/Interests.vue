@@ -41,9 +41,9 @@
                   <span class="command">./get_stats.sh</span>
                 </div>
                 <ul class="stats-list">
-                  <li><span class="bullet">></span> Favorite Routes: [Route Names]</li>
-                  <li><span class="bullet">></span> Dream Bike: [Bike Model]</li>
-                  <li><span class="bullet">></span> Best Journey: [Journey Name]</li>
+                  <li><span class="bullet">></span> Experience: 40,000+ km in 4 years</li>
+                  <li><span class="bullet">></span> Current Bike: Yamaha MT-07</li>
+                  <li><span class="bullet">></span> Status: Still riding and exploring</li>
                 </ul>
               </div>
             </div>
@@ -78,9 +78,9 @@
                   <span class="command">./get_stats.sh</span>
                 </div>
                 <ul class="stats-list">
-                  <li><span class="bullet">></span> Favorite Spots: [Location Names]</li>
-                  <li><span class="bullet">></span> Best Season: [Season]</li>
-                  <li><span class="bullet">></span> Essential Gear: [Gear List]</li>
+                  <li><span class="bullet">></span> Favorite Spots: Karaburun & Foça areas</li>
+                  <li><span class="bullet">></span> Best Season: Spring months</li>
+                  <li><span class="bullet">></span> Purpose: Mental relaxation & peace</li>
                 </ul>
               </div>
             </div>
@@ -115,9 +115,9 @@
                   <span class="command">./get_stats.sh</span>
                 </div>
                 <ul class="stats-list">
-                  <li><span class="bullet">></span> Countries Visited: [Number]</li>
-                  <li><span class="bullet">></span> Favorite City: [City Name]</li>
-                  <li><span class="bullet">></span> Next Destination: [Location]</li>
+                  <li><span class="bullet">></span> Preference: Historical sites & coastal areas</li>
+                  <li><span class="bullet">></span> Focus: Natural landscapes & scenery</li>
+                  <li><span class="bullet">></span> Style: Cultural & nature exploration</li>
                 </ul>
               </div>
             </div>
