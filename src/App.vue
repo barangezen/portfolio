@@ -1,283 +1,293 @@
 <template>
-  <div class="cyber-container">
-    <PageLoader :is-loading="isLoading" />
-    <CyberCursor />
-    
-    <!-- Cyberpunk Sound System -->
-    <CyberSoundManager />
-    
-    <!-- Interactive Neon Particles -->
-    <NeonParticles />
-    
-    <!-- Enhanced Cyberpunk Background -->
-    <CyberBackground />
-    
-    <!-- Optimized Matrix-style background animation -->
-    <div class="matrix-bg" :class="{ 'matrix-paused': routeTransitioning }">
-      <div v-for="n in matrixLines" :key="n" class="matrix-line" :style="{ 
-        animationDelay: `${n * 0.2}s`,
-        left: `${(n % 10) * 10}%`,
-        animationDuration: `${15 + (n % 5) * 2}s`
-      }">
-        {{ getMatrixContent(n) }}
+  <div class="portfolio-container">
+    <!-- Loading Screen -->
+    <div v-if="isLoading" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          BG
+          <div class="logo-dot"></div>
+        </div>
+        <div class="loading-bar"></div>
+        <div class="loading-text">Loading Portfolio...</div>
       </div>
     </div>
 
-    <!-- Optimized Cyber Navigation -->
-    <nav class="cyber-nav" :class="{ 'nav-visible': !isLoading }">
+    <!-- Background Elements -->
+    <div class="background-elements">
+      <div class="floating-orb"></div>
+      <div class="floating-orb"></div>
+      <div class="floating-orb"></div>
+      <div class="gradient-mesh"></div>
+    </div>
+
+    <!-- Modern Navigation -->
+    <nav class="modern-nav" :class="{ 'nav-visible': !isLoading }">
       <div class="nav-content">
         <router-link to="/" class="nav-logo">
-          <div class="glitch-wrapper">
-            <span class="glitch-text">BaranGezen</span>
+          <div class="logo-container">
+            <span class="logo-text">Baran Gezen</span>
+            <div class="logo-dot"></div>
           </div>
         </router-link>
+        
         <div class="nav-links">
-          <router-link v-for="route in routes" :key="route.path" :to="route.path" class="nav-item">
-            <span class="nav-icon">&gt;</span>
+          <router-link 
+            v-for="route in routes" 
+            :key="route.path" 
+            :to="route.path" 
+            class="nav-item"
+          >
             <span class="nav-text">{{ route.name }}</span>
-            <div class="nav-progress" v-if="route.path === currentRoute"></div>
+            <div class="nav-indicator"></div>
           </router-link>
+        </div>
+
+        <div class="nav-toggle" @click="toggleMobileNav">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
     </nav>
-    
-    <!-- Main Content Area with Enhanced Transitions -->
+
+    <!-- Main Content -->
     <main class="main-content" :class="{ 'content-visible': !isLoading }">
-      <router-view v-slot="{ Component, route }">
-        <transition 
-          :name="transitionName"
-          mode="out-in"
-          @before-leave="beforeLeave"
-          @enter="enter"
-          @after-enter="afterEnter"
-          @leave="leave"
-        >
-          <keep-alive :include="cachedComponents">
+      <div class="router-view-container">
+        <router-view v-slot="{ Component, route }">
+          <transition 
+            :name="transitionName"
+            mode="out-in"
+            @before-leave="beforeLeave"
+            @enter="enter"
+            @after-enter="afterEnter"
+            @after-leave="afterLeave"
+          >
             <component :is="Component" :key="route.path" />
-          </keep-alive>
-        </transition>
-      </router-view>
+          </transition>
+        </router-view>
+      </div>
     </main>
 
-    <!-- Optimized Decorative Elements -->
-    <div class="cyber-grid">
-      <div v-for="n in 4" :key="'grid-' + n" class="grid-line" :class="`grid-${n}`"></div>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress">
+      <div class="progress-bar" :style="{ width: `${scrollProgress}%` }"></div>
     </div>
-    
-    <!-- Performance Monitor (dev only) -->
-    <div v-if="showPerformanceStats" class="performance-stats">
-      <div>FPS: {{ fps }}</div>
-      <div>Transition: {{ transitionName }}</div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" ref="cursor">
+      <div class="cursor-dot"></div>
+      <div class="cursor-ring"></div>
+      <div class="cursor-text"></div>
+      <div class="cursor-trail"></div>
     </div>
   </div>
 </template>
 
 <script>
-import CyberCursor from './components/CyberCursor.vue'
-import PageLoader from './components/PageLoader.vue'
-import CyberBackground from './components/CyberBackground.vue'
-import NeonParticles from './components/NeonParticles.vue'
-import CyberSoundManager from './components/CyberSoundManager.vue'
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default {
   name: 'App',
-  components: {
-    CyberCursor,
-    PageLoader,
-    CyberBackground,
-    NeonParticles,
-    CyberSoundManager
-  },
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const currentRouteName = ref('')
     const isLoading = ref(true)
-    const routeTransitioning = ref(false)
+    const progress = ref(0)
+    const isNavVisible = ref(false)
     const transitionName = ref('fade')
-    const currentRoute = ref(route.path)
-    const fps = ref(60)
-    const showPerformanceStats = ref(process.env.NODE_ENV === 'development')
+    const scrollProgress = ref(0)
+    const cursor = ref(null)
+    const mobileNavOpen = ref(false)
     
-    // Route definitions for navigation
+    // Route definitions
     const routes = ref([
       { path: '/', name: 'Home' },
-      { path: '/experience', name: 'Experience' },
       { path: '/about', name: 'About' },
+      { path: '/experience', name: 'Experience' },
       { path: '/interests', name: 'Interests' }
     ])
-    
-    // Components to cache for better performance
-    const cachedComponents = ref(['Home', 'Experience', 'About', 'Interests'])
-    
-    // Optimized matrix lines count based on screen size
-    const matrixLines = computed(() => {
-      if (typeof window !== 'undefined') {
-        return window.innerWidth < 768 ? 15 : 25
+
+    // Navigation visibility on scroll
+    onMounted(() => {
+      // Loading sequence
+      const loadingTimer = setInterval(() => {
+        progress.value += Math.random() * 15
+        if (progress.value >= 100) {
+          progress.value = 100
+          clearInterval(loadingTimer)
+          setTimeout(() => {
+            isLoading.value = false
+            setTimeout(() => {
+              isNavVisible.value = true
+            }, 300)
+          }, 800)
+        }
+      }, 100)
+
+      // Route change handler
+      router.afterEach((to) => {
+        currentRouteName.value = to.name
+      })
+
+      // Initialize cursor
+      if (cursor.value) {
+        cursor.value.style.left = '50px'
+        cursor.value.style.top = '50px'
       }
-      return 25
     })
-    
-    // Pre-generated matrix content for performance
-    const matrixContentCache = ref({})
-    
-    const getMatrixContent = (index) => {
-      if (!matrixContentCache.value[index]) {
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-        const length = Math.random() > 0.7 ? 15 : 20
-        matrixContentCache.value[index] = Array.from({ length }, () => 
-          Math.random() > 0.7 ? chars[Math.floor(Math.random() * chars.length)] : Math.random() > 0.5 ? '1' : '0'
-        ).join('')
-      }
-      return matrixContentCache.value[index]
+
+    // Scroll progress tracking
+    const updateScrollProgress = () => {
+      const scrollTop = window.pageYOffset
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      scrollProgress.value = (scrollTop / docHeight) * 100
     }
 
-    // Performance monitoring
-    let lastTime = performance.now()
-    let frameCount = 0
-    
-    const updateFPS = () => {
-      frameCount++
-      const currentTime = performance.now()
-      if (currentTime >= lastTime + 1000) {
-        fps.value = Math.round((frameCount * 1000) / (currentTime - lastTime))
-        frameCount = 0
-        lastTime = currentTime
+    // Optimized cursor movement - no delays
+    const updateCursor = (e) => {
+      if (cursor.value) {
+        cursor.value.style.left = e.clientX + 'px'
+        cursor.value.style.top = e.clientY + 'px'
       }
-      requestAnimationFrame(updateFPS)
     }
 
-    // Enhanced transition logic
-    const routeOrder = { '/': 0, '/experience': 1, '/about': 2, '/interests': 3 }
+    const handleMouseEnter = (e) => {
+      if (cursor.value && e.target) {
+        const target = e.target
+        
+        // Ensure target is an element and has matches method
+        if (!target.nodeType || target.nodeType !== Node.ELEMENT_NODE) return
+        
+        // Polyfill for matches method
+        const matches = target.matches || target.webkitMatchesSelector || target.mozMatchesSelector || target.msMatchesSelector
+        if (!matches) return
+        
+        const cursorText = cursor.value.querySelector('.cursor-text')
+        
+        // Reset classes
+        cursor.value.className = 'custom-cursor'
+        
+        // Check element type and add appropriate class
+        try {
+          if (matches.call(target, 'a, button, .nav-item, .tech-tag, .achievement-tag, .goal-card, .highlight-card, .interest-card, .experience-card, .skill-category')) {
+            cursor.value.classList.add('cursor-hover')
+          } else if (matches.call(target, '.logo-text, .page-title, .section-title')) {
+            cursor.value.classList.add('cursor-text')
+            if (cursorText) cursorText.textContent = 'Click'
+          } else if (matches.call(target, 'img, .logo-placeholder, .card-icon')) {
+            cursor.value.classList.add('cursor-view')
+            if (cursorText) cursorText.textContent = 'View'
+          } else if (matches.call(target, '.scroll-progress, .loading-progress')) {
+            cursor.value.classList.add('cursor-progress')
+          }
+        } catch (error) {
+          // Fallback: check classes manually
+          const className = target.className || ''
+          const tagName = target.tagName ? target.tagName.toLowerCase() : ''
+          
+          if (tagName === 'a' || tagName === 'button' || 
+              className.includes('nav-item') || className.includes('tech-tag') || 
+              className.includes('achievement-tag') || className.includes('goal-card') ||
+              className.includes('highlight-card') || className.includes('interest-card') ||
+              className.includes('experience-card') || className.includes('skill-category')) {
+            cursor.value.classList.add('cursor-hover')
+          } else if (className.includes('logo-text') || className.includes('page-title') || className.includes('section-title')) {
+            cursor.value.classList.add('cursor-text')
+            if (cursorText) cursorText.textContent = 'Click'
+          } else if (tagName === 'img' || className.includes('logo-placeholder') || className.includes('card-icon')) {
+            cursor.value.classList.add('cursor-view')
+            if (cursorText) cursorText.textContent = 'View'
+          } else if (className.includes('scroll-progress') || className.includes('loading-progress')) {
+            cursor.value.classList.add('cursor-progress')
+          }
+        }
+      }
+    }
+
+    const handleMouseLeave = () => {
+      if (cursor.value) {
+        cursor.value.className = 'custom-cursor'
+        const cursorText = cursor.value.querySelector('.cursor-text')
+        if (cursorText) cursorText.textContent = ''
+      }
+    }
+
+    // Route transition logic - simplified and fast
+    const isTransitioning = ref(false)
     
     watch(route, (to, from) => {
-      currentRoute.value = to.path
-      
-      if (from && to.path !== from.path) {
-        routeTransitioning.value = true
+      if (from && to.path !== from.path && !isTransitioning.value) {
+        isTransitioning.value = true
+        transitionName.value = 'fade'
         
-        // Determine transition direction
-        const toIndex = routeOrder[to.path] || 0
-        const fromIndex = routeOrder[from.path] || 0
-        
-        if (toIndex > fromIndex) {
-          transitionName.value = 'slide-left'
-        } else if (toIndex < fromIndex) {
-          transitionName.value = 'slide-right'
-        } else {
-          transitionName.value = 'fade'
-        }
-        
-        // Preload route component if not cached
-        if (!cachedComponents.value.includes(to.name)) {
-          router.resolve(to.path)
-        }
-      }
-    })
-
-    onMounted(async () => {
-      // Initialize performance monitoring
-      if (showPerformanceStats.value) {
-        updateFPS()
-      }
-      
-      // Preload critical routes
-      await Promise.all([
-        router.resolve('/experience'),
-        router.resolve('/about')
-      ])
-      
-      // Reduce loading time
-      setTimeout(() => {
-        isLoading.value = false
-      }, 2000)
-    })
-
-    const beforeLeave = (el) => {
-      routeTransitioning.value = true
-      
-      // Add leaving animation class
-      el.classList.add('page-leaving')
-      
-      // Pause heavy animations during transition
-      const heavyAnimations = el.querySelectorAll('.matrix-line, .cyber-grid')
-      heavyAnimations.forEach(elem => {
-        elem.style.animationPlayState = 'paused'
-      })
-    }
-
-    const leave = (el, done) => {
-      const duration = 300
-      el.style.transition = `all ${duration}ms ease-out`
-      
-      nextTick(() => {
-        el.style.opacity = '0'
-        el.style.transform = 'translateY(-20px) scale(0.95)'
-        
+        // Reset transition flag quickly
         setTimeout(() => {
-          done()
-        }, duration)
-      })
+          isTransitioning.value = false
+        }, 400)
+      }
+    })
+
+    // Mobile navigation toggle
+    const toggleMobileNav = () => {
+      mobileNavOpen.value = !mobileNavOpen.value
     }
 
-    const enter = (el) => {
-      // Reset styles
-      el.style.opacity = '0'
-      el.style.transform = 'translateY(20px) scale(0.95)'
-      el.classList.add('page-entering')
-      
-      // Stagger animation for child elements
-      const sections = el.querySelectorAll('.section, .terminal-window, .interest-card, .experience-item')
-      sections.forEach((section, index) => {
-        section.style.opacity = '0'
-        section.style.transform = 'translateY(30px)'
-        section.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
-        section.style.transitionDelay = `${index * 0.08}s`
-      })
+    // Simplified transition handlers - no positioning
+    const beforeLeave = () => {
+      // Do nothing - let CSS handle everything
     }
 
-    const afterEnter = (el) => {
-      routeTransitioning.value = false
-      
-      // Animate page in
-      el.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-      el.style.opacity = '1'
-      el.style.transform = 'translateY(0) scale(1)'
-      
-      // Animate sections in
-      nextTick(() => {
-        const sections = el.querySelectorAll('.section, .terminal-window, .interest-card, .experience-item')
-        sections.forEach((section) => {
-          section.style.opacity = '1'
-          section.style.transform = 'translateY(0)'
-        })
-        
-        // Resume animations
-        const heavyAnimations = document.querySelectorAll('.matrix-line, .cyber-grid')
-        heavyAnimations.forEach(elem => {
-          elem.style.animationPlayState = 'running'
-        })
-      })
-      
-      el.classList.remove('page-entering', 'page-leaving')
+    const enter = () => {
+      // Do nothing - let CSS handle everything  
     }
+
+    const afterEnter = () => {
+      // Just scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    const afterLeave = () => {
+      // Do nothing - let CSS handle everything
+    }
+
+    onMounted(() => {
+      window.addEventListener('scroll', updateScrollProgress)
+      window.addEventListener('mousemove', updateCursor)
+      
+      // Add cursor interaction listeners with better event handling
+      document.addEventListener('mouseover', handleMouseEnter)
+      document.addEventListener('mouseout', handleMouseLeave)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', updateScrollProgress)
+      window.removeEventListener('mousemove', updateCursor)
+      
+      // Remove cursor interaction listeners
+      document.removeEventListener('mouseover', handleMouseEnter)
+      document.removeEventListener('mouseout', handleMouseLeave)
+    })
 
     return {
+      currentRouteName,
       isLoading,
-      routeTransitioning,
+      progress,
+      isNavVisible,
       transitionName,
-      currentRoute,
+      scrollProgress,
+      cursor,
+      mobileNavOpen,
       routes,
-      cachedComponents,
-      matrixLines,
-      fps,
-      showPerformanceStats,
-      getMatrixContent,
+      isTransitioning,
+      toggleMobileNav,
       beforeLeave,
-      leave,
       enter,
-      afterEnter
+      afterEnter,
+      afterLeave,
+      handleMouseEnter,
+      handleMouseLeave
     }
   }
 }
@@ -285,15 +295,23 @@ export default {
 
 <style lang="scss">
 :root {
-  --neon-green: #0f0;
-  --matrix-green: #00ff41;
-  --cyber-blue: #0ff;
-  --neon-pink: #ff1493;
-  --dark-bg: #0a0a0a;
-  --terminal-bg: #0c0c0c;
-  --terminal-border: #1a1a1a;
-  --text-color: #fff;
-  --grid-color: rgba(0, 255, 65, 0.1);
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-primary: #10b981;
+  --accent-secondary: #06d6a0;
+  --accent-tertiary: #59e8c6;
+  --accent-warm: #f59e0b;
+  --accent-purple: #8b5cf6;
+  --border-primary: rgba(255, 255, 255, 0.08);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+  --glow-primary: rgba(16, 185, 129, 0.3);
+  --glow-secondary: rgba(6, 214, 160, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -302,79 +320,233 @@ export default {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
-  background-color: var(--dark-bg);
-  color: var(--text-color);
-  font-family: 'Courier New', monospace;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.6;
-}
-
-.cyber-container {
-  min-height: 100vh;
-  position: relative;
-}
-
-/* Matrix Background */
-.matrix-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  overflow: hidden;
-  will-change: transform;
-}
-
-.matrix-bg.matrix-paused .matrix-line {
-  animation-play-state: paused;
-}
-
-.matrix-line {
-  position: absolute;
-  top: -100%;
-  color: var(--matrix-green);
-  font-size: 14px;
-  line-height: 1;
-  opacity: 0.3;
-  animation: matrix-fall linear infinite;
-  white-space: nowrap;
-  will-change: transform;
-  contain: layout style paint;
+  overflow-x: hidden;
+  cursor: none;
   
-  @for $i from 1 through 25 {
-    &:nth-child(#{$i}) {
-      left: #{($i % 10) * 10%};
-      animation-delay: #{$i * 0.2}s;
-      animation-duration: #{15 + ($i % 5) * 2}s;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 4px;
+    border: 1px solid var(--border-primary);
+    
+    &:hover {
+      background: linear-gradient(180deg, var(--accent-tertiary), var(--accent-primary));
+      box-shadow: 0 0 8px var(--glow-primary);
     }
   }
 }
 
-/* Navigation */
-.cyber-nav {
-  background: rgba(10, 10, 10, 0.9);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--matrix-green);
-  padding: 1rem;
-  position: sticky;
+// Ultra-smooth page transitions
+.fade-enter-active, 
+.fade-leave-active {
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-enter-from, 
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+
+// Enhanced Loading Animation
+.loading-screen {
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   
-  &::before {
+  &.fade-out {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .loading-content {
+    text-align: center;
+    
+    .loading-logo {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.2s;
+      
+      .logo-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+        border-radius: 50%;
+        margin-left: 0.5rem;
+        animation: pulse 1.5s infinite;
+        box-shadow: 0 0 20px var(--glow-primary);
+      }
+    }
+    
+    .loading-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -200px;
+        width: 200px;
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        animation: loading 1.5s ease-in-out infinite;
+        border-radius: 2px;
+        box-shadow: 0 0 10px var(--glow-primary);
+      }
+    }
+    
+    .loading-text {
+      margin-top: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.4s;
+    }
+  }
+}
+
+.portfolio-container {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+// Background Elements
+.background-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  
+  .floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+    
+    &:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+      animation-duration: 8s;
+    }
+    
+    &:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
+      top: 60%;
+      right: 20%;
+      animation-delay: 2s;
+      animation-duration: 10s;
+    }
+    
+    &:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(225deg, var(--accent-tertiary), var(--accent-primary));
+      bottom: 30%;
+      left: 50%;
+      animation-delay: 4s;
+      animation-duration: 12s;
+    }
+  }
+  
+  .gradient-mesh {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(90, 103, 216, 0.03) 0%, transparent 50%);
+    opacity: 0.7;
+  }
+}
+
+// Modern Navigation
+.modern-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &:before {
     content: '';
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--cyber-blue),
-      transparent
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.02) 0%, 
+      rgba(255, 255, 255, 0.01) 50%, 
+      transparent 100%
     );
-    animation: scan-line 2s linear infinite;
+    pointer-events: none;
+  }
+  
+  &.nav-visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -384,401 +556,661 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .nav-logo {
   text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   
-  .glitch-text {
-    color: var(--cyber-blue);
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-transform: uppercase;
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
+    overflow: hidden;
     
-    &::before,
-    &::after {
-      content: 'BaranGezen';
+    &:before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      background: radial-gradient(circle at center, 
+        rgba(16, 185, 129, 0.1) 0%, 
+        transparent 70%
+      );
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    &::before {
-      color: var(--neon-pink);
-      z-index: -2;
-      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+    
+    &:hover {
+      background: rgba(16, 185, 129, 0.08);
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      
+      &:before {
+        opacity: 1;
+        transform: scale(1);
+      }
+      
+      .logo-text {
+        color: var(--accent-primary);
+        letter-spacing: 0.02em;
+        text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      }
+      
+      .logo-dot {
+        transform: scale(1.3) rotate(180deg);
+        background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+        box-shadow: 0 0 25px var(--glow-primary);
+      }
     }
-
-    &::after {
-      color: var(--neon-green);
-      z-index: -1;
-      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #f8fafc;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: -0.02em;
+    }
+    
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 50%;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 12px var(--glow-primary);
     }
   }
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 0.5rem;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .nav-item {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
   text-decoration: none;
-  color: var(--matrix-green);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 4px;
+  color: #cbd5e1;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  letter-spacing: 0.01em;
   
-  &::before {
+  &:before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(135deg, 
+      rgba(16, 185, 129, 0.12) 0%, 
+      rgba(6, 214, 160, 0.08) 100%
+    );
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 14px;
+  }
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    transform: translateX(-50%);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 8px var(--glow-primary);
   }
   
   &:hover {
-    color: var(--cyber-blue);
-    transform: translateX(5px);
-    background: rgba(0, 255, 65, 0.05);
+    color: var(--accent-primary);
+    transform: translateY(-2px);
+    background: rgba(16, 185, 129, 0.1);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
     
-    &::before {
-      left: 100%;
+    &:before {
+      opacity: 1;
+      transform: scale(1) translateY(0);
     }
     
-    .nav-icon {
-      color: var(--neon-pink);
-      transform: scale(1.2);
+    &:after {
+      width: 70%;
+    }
+    
+    .nav-text {
+      transform: translateY(-1px);
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
     }
   }
   
   &.router-link-active {
-    color: var(--cyber-blue);
-    background: rgba(0, 255, 65, 0.1);
+    color: var(--accent-primary);
+    background: rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     
-    .nav-icon {
-      color: var(--neon-pink);
+    &:before {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.2) 0%, 
+        rgba(6, 214, 160, 0.15) 100%
+      );
     }
     
-    .nav-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      width: 100%;
-      background: var(--cyber-blue);
-      animation: nav-progress 0.3s ease;
+    &:after {
+      width: 80%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      box-shadow: 0 0 15px var(--glow-primary);
     }
+    
+    .nav-text {
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+    
+    .nav-indicator {
+      opacity: 1;
+      transform: scaleX(1);
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    }
+  }
+  
+  .nav-text {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .nav-indicator {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    width: 24px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 1px;
+    transform: translateX(-50%) scaleX(0);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-.nav-icon {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 0.875rem;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    display: flex;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.05);
+    
+    span {
+      background: #ffffff;
+      
+      &:nth-child(1) {
+        transform: translateX(3px);
+      }
+      
+      &:nth-child(2) {
+        transform: scaleX(0.7);
+      }
+      
+      &:nth-child(3) {
+        transform: translateX(-3px);
+      }
+    }
+  }
+  
+  span {
+    width: 22px;
+    height: 2px;
+    background: #cbd5e1;
+    border-radius: 1px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+  }
 }
 
-/* Main Content */
+// Main Content
 .main-content {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  padding-top: 100px;
+  min-height: 100vh;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  z-index: 1;
+  
+  &.content-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Grid Background */
-.cyber-grid {
+// Scroll Progress
+.scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--bg-secondary);
+  z-index: 1001;
+  
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+    transition: width 0.1s ease;
+    box-shadow: 0 0 10px var(--glow-primary);
+  }
+}
+
+// Modern Custom Cursor
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
   pointer-events: none;
-  will-change: transform;
-}
-
-.grid-line {
-  position: absolute;
-  background: var(--grid-color);
-  will-change: transform;
+  z-index: 9999;
+  transition: none;
   
-  &.grid-1 {
-    top: 20%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    animation: grid-pulse 4s ease-in-out infinite;
-  }
-  
-  &.grid-2 {
-    top: 60%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    animation: grid-pulse 4s ease-in-out infinite reverse;
+  .cursor-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
   }
   
-  &.grid-3 {
-    top: 0;
-    bottom: 0;
-    left: 30%;
-    width: 1px;
-    animation: grid-pulse 6s ease-in-out infinite;
+  .cursor-ring {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--accent-primary);
+    border-radius: 50%;
+    opacity: 0.4;
+    transition: all 0.15s ease;
+    background: rgba(16, 185, 129, 0.05);
   }
   
-  &.grid-4 {
-    top: 0;
-    bottom: 0;
-    right: 30%;
-    width: 1px;
-    animation: grid-pulse 6s ease-in-out infinite reverse;
-  }
-}
-
-/* Animations */
-@keyframes matrix-fall {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0.3;
-  }
-  10% {
-    opacity: 0.5;
-  }
-  90% {
-    opacity: 0.3;
-  }
-  100% {
-    transform: translateY(100vh);
+  .cursor-text {
+    position: absolute;
+    top: -40px;
+    left: -25px;
+    padding: 6px 12px;
+    background: var(--accent-primary);
+    border-radius: 20px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
     opacity: 0;
+    transform: translateY(10px) scale(0.8);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+  }
+  
+  .cursor-trail {
+    display: none;
+  }
+
+  // Hover State - Modern Design
+  &.cursor-hover {
+    .cursor-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--accent-secondary);
+      box-shadow: 0 0 25px rgba(6, 214, 160, 0.8);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .cursor-ring {
+      width: 45px;
+      height: 45px;
+      top: -22.5px;
+      left: -22.5px;
+      opacity: 0.7;
+      border-color: var(--accent-secondary);
+      background: rgba(6, 214, 160, 0.1);
+      border-width: 2px;
+    }
+  }
+
+  // Text Hover State
+  &.cursor-text {
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-tertiary);
+      box-shadow: 0 0 20px rgba(89, 232, 198, 0.7);
+    }
+    
+    .cursor-ring {
+      border-color: var(--accent-tertiary);
+      background: rgba(89, 232, 198, 0.08);
+      opacity: 0.6;
+    }
+    
+    .cursor-text {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      background: var(--accent-tertiary);
+      box-shadow: 0 4px 20px rgba(89, 232, 198, 0.4);
+    }
+  }
+
+  // View State
+  &.cursor-view {
+    .cursor-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--accent-primary);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+    }
+    
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      top: -20px;
+      left: -20px;
+      border-style: dashed;
+      border-width: 2px;
+      opacity: 0.8;
+      animation: slowRotate 3s linear infinite;
+    }
+    
+    .cursor-text {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      background: var(--accent-primary);
+    }
+  }
+
+  // Progress State
+  &.cursor-progress {
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-warm);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.7);
+    }
+    
+    .cursor-ring {
+      width: 25px;
+      height: 25px;
+      top: -12.5px;
+      left: -12.5px;
+      border-color: var(--accent-warm);
+      opacity: 0.6;
+      animation: modernPulse 1.5s ease-in-out infinite;
+    }
   }
 }
 
-@keyframes scan-line {
-  0% {
-    transform: translateX(-100%);
+// Cursor Animations
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cursor-pulse {
+  0%, 100% { 
+    transform: scale(0.8);
+    opacity: 0.6;
   }
-  100% {
-    transform: translateX(100%);
+  50% { 
+    transform: scale(1.2);
+    opacity: 1;
   }
 }
 
-@keyframes glitch {
-  0% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-@keyframes grid-pulse {
+// Keyframe Animations
+@keyframes pulse {
   0%, 100% {
-    opacity: 0.1;
-    box-shadow: 0 0 0 rgba(0, 255, 65, 0);
+    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    opacity: 0.3;
-    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    transform: scale(1.1);
+    opacity: 0.8;
   }
 }
 
-@keyframes nav-progress {
-  from {
-    width: 0;
+@keyframes loading {
+  0% {
+    left: -200px;
   }
-  to {
-    width: 100%;
+  50% {
+    left: 0;
+  }
+  100% {
+    left: 200px;
   }
 }
 
-@keyframes page-enter {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes page-leave {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-}
-
-/* Performance Monitor */
-.performance-stats {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--matrix-green);
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.8rem;
-  z-index: 1000;
-  
-  div {
-    margin: 0.2rem 0;
-  }
-}
-
-/* Page State Classes */
-.page-entering {
-  animation: page-enter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.page-leaving {
-  animation: page-leave 0.3s ease-out forwards;
-}
-
-/* Enhanced Page Transitions */
-.slide-left-enter-active,
-.slide-left-leave-active,
-.slide-right-enter-active,
-.slide-right-leave-active,
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slide-left-enter-from {
-  opacity: 0;
-  transform: translateX(50px) scale(0.95);
-}
-
-.slide-left-leave-to {
-  opacity: 0;
-  transform: translateX(-50px) scale(1.05);
-}
-
-.slide-right-enter-from {
-  opacity: 0;
-  transform: translateX(-50px) scale(0.95);
-}
-
-.slide-right-leave-to {
-  opacity: 0;
-  transform: translateX(50px) scale(1.05);
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-/* Initial Load Animations */
-.nav-visible {
-  animation: slide-down 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.content-visible {
-  animation: fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slide-down {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
     transform: translateY(0);
-    opacity: 1;
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-/* Enhanced Section Animations */
-.section, .terminal-window, .interest-card, .experience-item {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-/* Responsive Design */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--glow-primary);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--glow-primary), 0 0 40px var(--glow-secondary);
+  }
+}
+
+// Page Transition Container - clean and simple
+.router-view-container {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  will-change: opacity;
+}
+
+// Smooth scroll behavior for internal links
+html {
+  scroll-behavior: smooth;
+}
+
+// Enhanced scroll animations
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
+// Custom scrollbar for webkit browsers with enhanced styling
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 5px;
+    margin: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-tertiary) 100%);
+    border-radius: 5px;
+    border: 2px solid var(--bg-secondary);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-tertiary) 50%, var(--accent-primary) 100%);
+    border: 2px solid var(--bg-tertiary);
+    box-shadow: 
+      0 0 15px rgba(99, 102, 241, 0.5),
+      inset 0 0 10px rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(135deg, var(--accent-tertiary) 0%, var(--accent-primary) 100%);
+    box-shadow: 
+      0 0 20px rgba(6, 182, 212, 0.7),
+      inset 0 0 15px rgba(255, 255, 255, 0.2);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--bg-secondary);
+    border-radius: 5px;
+  }
+}
+
+// Enhanced transition wrapper
+.transition-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+// Responsive Design
 @media (max-width: 768px) {
-  .nav-content {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .nav-item {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .matrix-line {
-    font-size: 12px;
+  .modern-nav {
+    padding: 1rem;
   }
   
-  .performance-stats {
-    font-size: 0.7rem;
-  }
-}
-
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .matrix-line,
-  .grid-line {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  .main-content {
+    padding-top: 80px;
   }
   
+  .custom-cursor {
+    display: none;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scroll-progress {
+    height: 2px;
+  }
+  
+  // Mobile transition optimizations
   .slide-left-enter-active,
   .slide-left-leave-active,
   .slide-right-enter-active,
   .slide-right-leave-active,
   .fade-enter-active,
   .fade-leave-active {
-    transition-duration: 0.01ms !important;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .router-view-container {
+    min-height: calc(100vh - 80px);
+    contain: layout style;
+  }
+}
+
+// Dark mode enhancements
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid var(--bg-primary);
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  ::-webkit-scrollbar-thumb {
+    background: var(--text-primary);
+    border: 1px solid var(--bg-primary);
+  }
+  
+  .scroll-progress .progress-bar {
+    background: var(--text-primary);
+  }
+}
+
+// Modern Cursor Animations
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes modernPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.3);
+    opacity: 0.9;
   }
 }
 </style>

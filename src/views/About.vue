@@ -1,357 +1,708 @@
 <!-- About.vue -->
 <template>
   <div class="about-view">
-    <div class="terminal-window">
-      <div class="terminal-header">
-        <span class="terminal-title">about.exe</span>
-      </div>
-      <div class="terminal-content">
-        <div class="command-line">
-          <span class="prompt">$</span>
-          <span class="command">cat profile.json</span>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="page-title">About Me</h1>
+          <p class="page-subtitle">
+            Get to know more about my background, skills, and passion for technology
+          </p>
         </div>
-
-        <div class="about-sections">
-          <div class="section">
-            <div class="section-header">
-              <span class="prompt">>></span>
-              <span class="section-title">EDUCATION</span>
-            </div>
-            <div class="content">
-              <div class="command-line">
-                <span class="prompt">$</span>
-                <span class="command">cat education.log</span>
-              </div>
-              <div class="education-info">
-                <div class="university">
-                  <span class="name">Celal Bayar University</span>
-                  <span class="year">[2017-2022]</span>
-                </div>
-                <div class="department-degree">
-                  <span class="degree">B.S. in Computer Engineering</span>
-                </div>
-                <div class="stats">
-                  <span class="gpa">GPA: 3.42/4.00</span>
-                </div>
-              </div>
-            </div>
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <img src="/baran-gezen.jpg" alt="Baran Gezen" class="avatar-image" />
+            <div class="status-indicator"></div>
           </div>
-
-          <div class="section">
-            <div class="section-header">
-              <span class="prompt">>></span>
-              <span class="section-title">TECH_STACK</span>
-            </div>
-            <div class="content">
-              <div class="command-line">
-                <span class="prompt">$</span>
-                <span class="command">ls tech/</span>
-              </div>
-              <div class="tech-categories">
-                <div class="tech-category">
-                  <h3 class="category-title">> Frontend</h3>
-                  <div class="tech-tags">
-                    <span class="tag">React</span>
-                    <span class="tag">React_Native</span>
-                    <span class="tag">NextJS</span>
-                    <span class="tag">Web Components</span>
-                    <span class="tag">Remix</span>
-                    <span class="tag">React_Query</span>
-                    <span class="tag">Redux / Zustand / Valtio</span>
-                    <span class="tag">Tailwind</span>
-                    <span class="tag">Bootstrap</span>
-                    <span class="tag">Sass</span>
-                  </div>
-                </div>
-                <div class="tech-category">
-                  <h3 class="category-title">> Backend</h3>
-                  <div class="tech-tags">
-                    <span class="tag">NodeJS</span>
-                    <span class="tag">Express</span>
-                    <span class="tag">Mongoose</span>
-                    <span class="tag">.Net</span>
-                    <span class="tag">SQL</span>
-                    <span class="tag">Entity_Framework</span>
-                  </div>
-                </div>
-                <div class="tech-category">
-                  <h3 class="category-title">> Languages</h3>
-                  <div class="tech-tags">
-                    <span class="tag">TypeScript</span>
-                    <span class="tag">JavaScript</span>
-                    <span class="tag">C#</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-header">
-              <span class="prompt">>></span>
-              <span class="section-title">SYSTEM_INFO</span>
-            </div>
-            <div class="content">
-              <div class="command-line">
-                <span class="prompt">$</span>
-                <span class="command">neofetch</span>
-              </div>
-              <div class="system-info">
-                <div class="info-item">
-                  <span class="info-icon">[⚡]</span>
-                  <span class="info-text">Full-Stack Developer</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-icon">[💻]</span>
-                  <span class="info-text">Remote Work Specialist</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-icon">[🔧]</span>
-                  <span class="info-text">Modern Tech Stack Expert</span>
-                </div>
-              </div>
+          <div class="profile-info">
+            <h3>Baran Gezen</h3>
+            <p>Full-Stack Software Engineer</p>
+            <div class="availability">
+              <span class="status-dot"></span>
+              Available for new opportunities
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="education-section">
+      <div class="section-header">
+        <h2 class="section-title">Education</h2>
+        <p class="section-subtitle">My academic journey</p>
+      </div>
+      
+      <div class="education-card">
+        <div class="card-icon">🎓</div>
+        <div class="card-content">
+          <div class="institution">
+            <h3>Celal Bayar University</h3>
+            <span class="duration">2017 - 2022</span>
+          </div>
+          <div class="degree">
+            <h4>Bachelor of Science in Computer Engineering</h4>
+            <div class="grade">
+              <span class="label">GPA:</span>
+              <span class="value">3.42/4.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-section">
+      <div class="section-header">
+        <h2 class="section-title">Tech Stack</h2>
+        <p class="section-subtitle">Technologies I work with</p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-category">
+          <div class="category-header">
+            <div class="category-icon">⚛️</div>
+            <h3>Frontend</h3>
+          </div>
+          <div class="tech-list">
+            <span class="tech-tag react">React</span>
+            <span class="tech-tag">React Native</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Web Components</span>
+            <span class="tech-tag">Remix</span>
+            <span class="tech-tag">React Query</span>
+            <span class="tech-tag">Redux / Zustand / Valtio</span>
+            <span class="tech-tag">Tailwind</span>
+            <span class="tech-tag">Bootstrap</span>
+            <span class="tech-tag">Sass</span>
+          </div>
+        </div>
+
+        <div class="tech-category">
+          <div class="category-header">
+            <div class="category-icon">🔧</div>
+            <h3>Backend</h3>
+          </div>
+          <div class="tech-list">
+            <span class="tech-tag node">Node.js</span>
+            <span class="tech-tag">Express</span>
+            <span class="tech-tag">Mongoose</span>
+            <span class="tech-tag">.NET</span>
+            <span class="tech-tag">SQL</span>
+            <span class="tech-tag">Entity Framework</span>
+          </div>
+        </div>
+
+        <div class="tech-category">
+          <div class="category-header">
+            <div class="category-icon">💻</div>
+            <h3>Languages</h3>
+          </div>
+          <div class="tech-list">
+            <span class="tech-tag typescript">TypeScript</span>
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">C#</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section">
+      <div class="section-header">
+        <h2 class="section-title">Professional Skills</h2>
+        <p class="section-subtitle">What I bring to the table</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">⚡</div>
+          <h3>Full-Stack Development</h3>
+          <p>End-to-end application development with modern technologies and best practices.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">💻</div>
+          <h3>Remote Work Specialist</h3>
+          <p>Experienced in remote collaboration, communication, and productivity optimization.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🔧</div>
+          <h3>Modern Tech Stack Expert</h3>
+          <p>Proficient in cutting-edge frameworks, tools, and development methodologies.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">📱</div>
+          <h3>Cross-Platform Development</h3>
+          <p>Building applications that work seamlessly across web and mobile platforms.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🎨</div>
+          <h3>UI/UX Implementation</h3>
+          <p>Translating designs into pixel-perfect, interactive user interfaces.</p>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🚀</div>
+          <h3>Performance Optimization</h3>
+          <p>Optimizing applications for speed, efficiency, and exceptional user experience.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Personal Info Section -->
+    <section class="personal-section">
+      <div class="section-header">
+        <h2 class="section-title">Personal Touch</h2>
+        <p class="section-subtitle">A bit more about who I am</p>
+      </div>
+
+      <div class="personal-grid">
+        <div class="personal-card">
+          <div class="card-content">
+            <h3>🌍 Location</h3>
+            <p>Based in Turkey, working remotely with global teams</p>
+          </div>
+        </div>
+
+        <div class="personal-card">
+          <div class="card-content">
+            <h3>💡 Passion</h3>
+            <p>Creating innovative solutions that make a real difference</p>
+          </div>
+        </div>
+
+        <div class="personal-card">
+          <div class="card-content">
+            <h3>🎯 Goal</h3>
+            <p>Building products that users love and businesses need</p>
+          </div>
+        </div>
+
+        <div class="personal-card">
+          <div class="card-content">
+            <h3>📚 Learning</h3>
+            <p>Always exploring new technologies and best practices</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
+import { onMounted } from 'vue'
+
 export default {
-  name: 'AboutView'
+  name: 'AboutView',
+  setup() {
+    onMounted(() => {
+      // Animate cards on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in')
+          }
+        })
+      }, observerOptions)
+      
+      // Observe all animatable elements
+      document.querySelectorAll('.education-card, .tech-category, .skill-card, .personal-card').forEach(el => {
+        observer.observe(el)
+      })
+    })
+
+    return {}
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .about-view {
-  padding: 1rem;
-}
-
-.terminal-window {
-  background: var(--terminal-bg);
-  border: 1px solid var(--terminal-border);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-}
-
-.terminal-header {
-  background: #1a1a1a;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--terminal-border);
+  padding: 2rem;
+  color: var(--text-primary);
+  max-width: 1200px;
+  margin: 0 auto;
   
-  .terminal-title {
-    color: var(--matrix-green);
-    font-size: 0.9rem;
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 }
 
-.terminal-content {
-  padding: 1.5rem;
+// Hero Section
+.hero-section {
+  margin-bottom: 4rem;
 }
 
-.command-line {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-family: 'Courier New', monospace;
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: center;
   
-  .prompt {
-    color: var(--matrix-green);
-  }
-  
-  .command {
-    color: var(--cyber-blue);
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    text-align: center;
   }
 }
 
-.about-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.section {
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
-  padding: 1.5rem;
+.hero-text {
+  .page-title {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   
-  &:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-    
-    .section-header {
-      color: var(--cyber-blue);
-    }
+  .page-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 500px;
   }
 }
 
-.section-header {
+.profile-card {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  color: var(--matrix-green);
-  font-weight: bold;
-}
-
-.content {
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  
+  .profile-avatar {
+    position: relative;
     
-    li {
-      margin-bottom: 0.5rem;
-      display: flex;
-      gap: 0.5rem;
-      color: var(--text-color);
+    .avatar-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-primary);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
       
-      .bullet {
-        color: var(--matrix-green);
+      &:hover {
+        transform: scale(1.2);
+        box-shadow: 
+          0 0 40px rgba(16, 185, 129, 0.6),
+          0 0 80px rgba(16, 185, 129, 0.3);
+        border-color: var(--accent-secondary);
+        border-width: 4px;
+        z-index: 10;
+      }
+    }
+    
+    .status-indicator {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 16px;
+      height: 16px;
+      background: #28ca42;
+      border: 3px solid var(--bg-secondary);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px rgba(40, 202, 66, 0.5);
+    }
+  }
+  
+  .profile-info {
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    
+    .availability {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--accent-primary);
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: var(--accent-primary);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+      }
+      
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #28ca42;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 8px rgba(40, 202, 66, 0.6);
       }
     }
   }
 }
 
-.education-info {
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
-  padding: 1rem;
-  margin-top: 1rem;
-
-  .university {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+// Section Styling
+.section-header {
+  margin-bottom: 3rem;
+  text-align: center;
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-
-    .name {
-      color: var(--cyber-blue);
-      font-size: 1.1rem;
-    }
-
-    .year {
-      color: var(--matrix-green);
-      font-size: 0.9rem;
-    }
+    color: var(--text-primary);
   }
-
-  .department-degree {
-    margin-bottom: 0.5rem;
-  }
-
-  .degree {
-    color: var(--cyber-blue);
-    font-size: 0.9rem;
-  }
-
-  .stats {
+  
+  .section-subtitle {
+    font-size: 1.1rem;
     color: var(--text-secondary);
-    font-size: 0.9rem;
   }
 }
 
-.tech-categories {
+// Education Section
+.education-section {
+  margin-bottom: 4rem;
+}
+
+.education-card {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1rem;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-icon {
+    font-size: 3rem;
+    min-width: 80px;
+    text-align: center;
+  }
+  
+  .card-content {
+    flex: 1;
+    
+    .institution {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      
+      @media (max-width: 640px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      
+      .duration {
+        color: var(--accent-primary);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        background: rgba(99, 102, 241, 0.1);
+        border-radius: 8px;
+      }
+    }
+    
+    .degree {
+      h4 {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+      }
+      
+      .grade {
+        display: flex;
+        gap: 0.5rem;
+        
+        .label {
+          color: var(--text-muted);
+        }
+        
+        .value {
+          color: var(--accent-primary);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// Tech Section
+.tech-section {
+  margin-bottom: 4rem;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .tech-category {
-  .category-title {
-    color: var(--matrix-green);
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-    font-weight: normal;
-  }
-
-  .tech-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-}
-
-.tag {
-  background: rgba(0, 255, 65, 0.1);
-  border: 1px solid var(--matrix-green);
-  color: var(--cyber-blue);
-  padding: 0.3rem 0.8rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(0, 255, 65, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 255, 65, 0.2);
+  opacity: 0;
+  transform: translateY(30px);
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
   }
-}
-
-.system-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
   
   &:hover {
-    background: rgba(0, 255, 65, 0.1);
-    transform: translateX(5px);
-    transition: all 0.3s ease;
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+  }
+  
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
     
-    .info-icon {
-      color: var(--cyber-blue);
+    .category-icon {
+      font-size: 2rem;
+    }
+    
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
     }
   }
   
-  .info-icon {
-    color: var(--matrix-green);
-    font-size: 1.2rem;
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
   
-  .info-text {
-    color: var(--text-color);
+  .tech-tag {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     font-size: 0.9rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+    
+    &.react {
+      border-color: #61dafb;
+      color: #61dafb;
+      
+      &:hover {
+        background: rgba(97, 218, 251, 0.1);
+        box-shadow: 0 5px 15px rgba(97, 218, 251, 0.3);
+      }
+    }
+    
+    &.node {
+      border-color: #68a063;
+      color: #68a063;
+      
+      &:hover {
+        background: rgba(104, 160, 99, 0.1);
+        box-shadow: 0 5px 15px rgba(104, 160, 99, 0.3);
+      }
+    }
+    
+    &.typescript {
+      border-color: #3178c6;
+      color: #3178c6;
+      
+      &:hover {
+        background: rgba(49, 120, 198, 0.1);
+        box-shadow: 0 5px 15px rgba(49, 120, 198, 0.3);
+      }
+    }
   }
 }
 
-@media (max-width: 768px) {
-  .about-view {
-    padding: 0.5rem;
+// Skills Section
+.skills-section {
+  margin-bottom: 4rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.skill-card {
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
   }
   
-  .system-info {
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .skill-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  
+  p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+}
+
+// Personal Section
+.personal-section {
+  margin-bottom: 4rem;
+}
+
+.personal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.personal-card {
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  
+  .card-content {
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.8; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1); 
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .education-card {
+    flex-direction: column;
+    text-align: center;
+    
+    .card-icon {
+      min-width: auto;
+    }
+  }
+  
+  .tech-grid,
+  .skills-grid {
     grid-template-columns: 1fr;
   }
   
-  .tech-categories {
-    gap: 1rem;
-  }
-  
-  .tech-tags {
-    justify-content: center;
-  }
-  
-  .education-info {
-    .university {
-      flex-direction: column;
-      text-align: center;
-      gap: 0.5rem;
+  .personal-grid {
+    grid-template-columns: repeat(2, 1fr);
+    
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
     }
   }
 }

@@ -1,408 +1,923 @@
 <!-- Experience.vue -->
 <template>
   <div class="experience-view">
-    <div class="terminal-window">
-      <div class="terminal-header">
-        <span class="terminal-title">experience.exe</span>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="page-title">Professional Experience</h1>
+          <p class="page-subtitle">
+            My journey through different companies and technologies, building scalable solutions and growing as a developer
+          </p>
+        </div>
+        <div class="experience-summary">
+          <div class="summary-card">
+            <div class="summary-stat">
+              <span class="stat-number">3+</span>
+              <span class="stat-label">Years</span>
+            </div>
+            <div class="summary-stat">
+              <span class="stat-number">5</span>
+              <span class="stat-label">Companies</span>
+            </div>
+            <div class="summary-stat">
+              <span class="stat-number">50+</span>
+              <span class="stat-label">Projects</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="terminal-content">
-        <div class="command-line">
-          <span class="prompt">$</span>
-          <span class="command">cat work_history.log</span>
-        </div>
+    </section>
 
-        <div class="timeline">
-          <div class="experience-item">
-            <div class="experience-header">
-              <div class="status-line">
-                <span class="prompt">>></span>
-                <span class="status active">CURRENT_MISSION</span>
-                <span class="date">[SEPTEMBER 2024 - PRESENT]</span>
-              </div>
-            </div>
-            <div class="experience-content">
-              <p class="company">HOTELRUNNER</p>
-              <p class="role">Frontend Engineer</p>
-              <div class="achievements">
-                <div class="command-line">
-                  <span class="prompt">$</span>
-                  <span class="command">ls achievements/</span>
-                </div>
-                <ul>
-                  <li><span class="bullet">></span> Developing and maintaining the Design System, including version updates and documentation with Storybook.</li>
-                  <li><span class="bullet">></span> Developing new projects and implementing features for existing projects.</li>
-                  <li><span class="bullet">></span> Fixing bugs and improving code quality in projects.</li>
-                  <li><span class="bullet">></span> Creating a reusable table component using Tanstack's headless table for use across all projects.</li>
-                  <li><span class="bullet">></span> Working in a microfrontend architecture using Shadow DOM and Web Components.</li>
-                </ul>
-              </div>
-              <div class="tech-stack">
-                <span class="tech-badge">React</span>
-                <span class="tech-badge">TypeScript</span>
-                <span class="tech-badge">Valtio</span>
-                <span class="tech-badge">Tanstack Query</span>
-                <span class="tech-badge">Headless APIs</span>
-                <span class="tech-badge">Web Components</span>
-                <span class="tech-badge">Storybook</span>
-              </div>
-            </div>
-          </div>
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+      <div class="timeline-header">
+        <h2 class="section-title">Career Timeline</h2>
+        <div class="timeline-line"></div>
+      </div>
 
-          <div class="experience-item">
-            <div class="experience-header">
-              <div class="status-line">
-                <span class="prompt">>></span>
-                <span class="status completed">PREVIOUS_MISSION</span>
-                <span class="date">[JAN 2023 - SEPTEMBER 2024]</span>
-              </div>
-            </div>
-            <div class="experience-content">
-              <p class="company">SENDEO</p>
-              <p class="role">Full-Stack Engineer</p>
-              <div class="achievements">
-                <div class="command-line">
-                  <span class="prompt">$</span>
-                  <span class="command">ls achievements/</span>
-                </div>
-                <ul>
-                  <li><span class="bullet">></span> Rewrote company website using Next.js, implementing component tests and Storybook</li>
-                  <li><span class="bullet">></span> Migrated JavaScript projects to TypeScript and updated BFF architecture</li>
-                  <li><span class="bullet">></span> Supported backend development with .Net and C# for API updates</li>
-                </ul>
-              </div>
-              <div class="tech-stack">
-                <span class="tech-badge">React</span>
-                <span class="tech-badge">Next.js</span>
-                <span class="tech-badge">TypeScript</span>
-                <span class="tech-badge">Redux</span>
-                <span class="tech-badge">Storybook</span>
-                <span class="tech-badge">.Net</span>
-                <span class="tech-badge">C#</span>
-                <span class="tech-badge">Sass</span>
-                <span class="tech-badge">Tailwind</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="experience-item">
-            <div class="experience-header">
-              <div class="status-line">
-                <span class="prompt">>></span>
-                <span class="status completed">PREVIOUS_MISSION</span>
-                <span class="date">[APR 2022 - DEC 2022]</span>
-              </div>
-            </div>
-            <div class="experience-content">
-              <p class="company">FEATURE/MIND</p>
-              <p class="role">Frontend Engineer</p>
-              <div class="achievements">
-                <div class="command-line">
-                  <span class="prompt">$</span>
-                  <span class="command">ls achievements/</span>
-                </div>
-                <ul>
-                  <li><span class="bullet">></span> Updated legacy projects to React PWA Kit for e-commerce platforms</li>
-                  <li><span class="bullet">></span> Provided mentorship to junior developers in React and TypeScript</li>
-                  <li><span class="bullet">></span> Worked with Salesforce Commerce Cloud ecosystem</li>
-                </ul>
-              </div>
-              <div class="tech-stack">
-                <span class="tech-badge">React</span>
-                <span class="tech-badge">TypeScript</span>
-                <span class="tech-badge">PWA</span>
-                <span class="tech-badge">Salesforce</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="experience-item">
-            <div class="experience-header">
-              <div class="status-line">
-                <span class="prompt">>></span>
-                <span class="status completed">PREVIOUS_MISSION</span>
-                <span class="date">[MAR 2021 - APR 2022]</span>
-              </div>
-            </div>
-            <div class="experience-content">
-              <p class="company">VALPROVIA GMBH</p>
-              <p class="role">Frontend Engineer</p>
-              <div class="achievements">
-                <div class="command-line">
-                  <span class="prompt">$</span>
-                  <span class="command">ls achievements/</span>
-                </div>
-                <ul>
-                  <li><span class="bullet">></span> Created highly documented and tested code for Microsoft 365 productivity solutions</li>
-                  <li><span class="bullet">></span> Mentored developers through code reviews and pair programming</li>
-                  <li><span class="bullet">></span> Led architecture decisions for new features</li>
-                </ul>
-              </div>
-              <div class="tech-stack">
-                <span class="tech-badge">React</span>
-                <span class="tech-badge">TypeScript</span>
-                <span class="tech-badge">Storybook</span>
-                <span class="tech-badge">Jest</span>
-                <span class="tech-badge">Enzyme</span>
-                <span class="tech-badge">Fluent UI</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="skills-section">
-          <div class="command-line">
-            <span class="prompt">$</span>
-            <span class="command">./analyze_skills.sh</span>
+      <div class="timeline">
+        <!-- Current Position -->
+        <div class="timeline-item current">
+          <div class="timeline-marker">
+            <div class="marker-dot current-dot"></div>
+            <div class="marker-pulse"></div>
           </div>
           
-          <div class="skills-grid">
-            <div class="skill-category">
-              <div class="skill-header">
-                <span class="prompt">>></span>
-                <span class="category-name">FRONTEND_SKILLS</span>
+          <div class="experience-card">
+            <div class="card-header">
+              <div class="position-info">
+                <h3 class="company-name">HOTELRUNNER</h3>
+                <p class="role-title">Frontend Engineer</p>
+                <div class="duration">
+                  <span class="status-badge current">Current Position</span>
+                  <span class="date-range">September 2024 - Present</span>
+                </div>
               </div>
-              <ul class="skill-list">
-                <li><span class="bullet">></span> JavaScript / TypeScript</li>
-                <li><span class="bullet">></span> React / Next.js</li>
-                <li><span class="bullet">></span> React Native</li>
-                <li><span class="bullet">></span> TypeScript</li>
-                <li><span class="bullet">></span> Redux / Zustand / Valtio</li>
-                <li><span class="bullet">></span> Tailwind / Sass</li>
-              </ul>
+              <div class="company-logo">
+                <div class="logo-placeholder">HR</div>
+              </div>
             </div>
 
-            <div class="skill-category">
-              <div class="skill-header">
-                <span class="prompt">>></span>
-                <span class="category-name">BACKEND_SKILLS</span>
+            <div class="card-content">
+              <div class="achievements-section">
+                <h4>Key Achievements</h4>
+                <ul class="achievements-list">
+                  <li>Developing and maintaining the Design System, including version updates and documentation with Storybook</li>
+                  <li>Developing new projects and implementing features for existing projects</li>
+                  <li>Fixing bugs and improving code quality in projects</li>
+                  <li>Creating a reusable table component using Tanstack's headless table for use across all projects</li>
+                  <li>Working in a microfrontend architecture using Shadow DOM and Web Components</li>
+                </ul>
               </div>
-              <ul class="skill-list">
-                <li><span class="bullet">></span> Node.js / Express</li>
-                <li><span class="bullet">></span> .Net / C#</li>
-                <li><span class="bullet">></span> SQL</li>
-                <li><span class="bullet">></span> Entity Framework</li>
-                <li><span class="bullet">></span> Mongoose</li>
-              </ul>
+
+              <div class="tech-stack">
+                <h4>Technologies Used</h4>
+                <div class="tech-tags">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">TypeScript</span>
+                  <span class="tech-tag">Valtio</span>
+                  <span class="tech-tag">Tanstack Query</span>
+                  <span class="tech-tag">Headless APIs</span>
+                  <span class="tech-tag">Web Components</span>
+                  <span class="tech-tag">Storybook</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Previous Positions -->
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="marker-dot"></div>
+          </div>
+          
+          <div class="experience-card">
+            <div class="card-header">
+              <div class="position-info">
+                <h3 class="company-name">SENDEO</h3>
+                <p class="role-title">Full-Stack Engineer</p>
+                <div class="duration">
+                  <span class="date-range">January 2023 - September 2024</span>
+                </div>
+              </div>
+              <div class="company-logo">
+                <div class="logo-placeholder">SE</div>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="achievements-section">
+                <h4>Key Achievements</h4>
+                <ul class="achievements-list">
+                  <li>Rewrote company website using Next.js, implementing component tests and Storybook</li>
+                  <li>Migrated JavaScript projects to TypeScript and updated BFF architecture</li>
+                  <li>Supported backend development with .Net and C# for API updates</li>
+                </ul>
+              </div>
+
+              <div class="tech-stack">
+                <h4>Technologies Used</h4>
+                <div class="tech-tags">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">Next.js</span>
+                  <span class="tech-tag">TypeScript</span>
+                  <span class="tech-tag">Redux</span>
+                  <span class="tech-tag">Storybook</span>
+                  <span class="tech-tag">.Net</span>
+                  <span class="tech-tag">C#</span>
+                  <span class="tech-tag">Sass</span>
+                  <span class="tech-tag">Tailwind</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="marker-dot"></div>
+          </div>
+          
+          <div class="experience-card">
+            <div class="card-header">
+              <div class="position-info">
+                <h3 class="company-name">FEATURE/MIND</h3>
+                <p class="role-title">Frontend Engineer</p>
+                <div class="duration">
+                  <span class="date-range">April 2022 - December 2022</span>
+                </div>
+              </div>
+              <div class="company-logo">
+                <div class="logo-placeholder">FM</div>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="achievements-section">
+                <h4>Key Achievements</h4>
+                <ul class="achievements-list">
+                  <li>Updated legacy projects to React PWA Kit for e-commerce platforms</li>
+                  <li>Provided mentorship to junior developers in React and TypeScript</li>
+                  <li>Worked with Salesforce Commerce Cloud ecosystem</li>
+                </ul>
+              </div>
+
+              <div class="tech-stack">
+                <h4>Technologies Used</h4>
+                <div class="tech-tags">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">TypeScript</span>
+                  <span class="tech-tag">PWA</span>
+                  <span class="tech-tag">Salesforce</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker">
+            <div class="marker-dot"></div>
+          </div>
+          
+          <div class="experience-card">
+            <div class="card-header">
+              <div class="position-info">
+                <h3 class="company-name">VALPROVIA GMBH</h3>
+                <p class="role-title">Frontend Engineer</p>
+                <div class="duration">
+                  <span class="date-range">March 2021 - April 2022</span>
+                </div>
+              </div>
+              <div class="company-logo">
+                <div class="logo-placeholder">VG</div>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="achievements-section">
+                <h4>Key Achievements</h4>
+                <ul class="achievements-list">
+                  <li>Created highly documented and tested code for Microsoft 365 productivity solutions</li>
+                  <li>Mentored developers through code reviews and pair programming</li>
+                  <li>Led architecture decisions for new features</li>
+                </ul>
+              </div>
+
+              <div class="tech-stack">
+                <h4>Technologies Used</h4>
+                <div class="tech-tags">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">TypeScript</span>
+                  <span class="tech-tag">Storybook</span>
+                  <span class="tech-tag">Jest</span>
+                  <span class="tech-tag">Enzyme</span>
+                  <span class="tech-tag">Fluent UI</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section">
+      <div class="section-header">
+        <h2 class="section-title">Technical Expertise</h2>
+        <p class="section-subtitle">Technologies and tools I work with daily</p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-category frontend">
+          <div class="category-header">
+            <div class="category-icon">⚛️</div>
+            <h3>Frontend Development</h3>
+          </div>
+          <div class="skills-list">
+            <div class="skill-item">
+              <span class="skill-name">JavaScript / TypeScript</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 95%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">React / Next.js</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 90%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">React Native</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Redux / Zustand / Valtio</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Tailwind / Sass</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category backend">
+          <div class="category-header">
+            <div class="category-icon">⚙️</div>
+            <h3>Backend Development</h3>
+          </div>
+          <div class="skills-list">
+            <div class="skill-item">
+              <span class="skill-name">Node.js / Express</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">.Net / C#</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 75%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">SQL</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Entity Framework</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 70%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Mongoose</span>
+              <div class="skill-bar">
+                <div class="skill-progress" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Highlights -->
+    <section class="highlights-section">
+      <div class="section-header">
+        <h2 class="section-title">Career Highlights</h2>
+        <p class="section-subtitle">Notable achievements throughout my journey</p>
+      </div>
+
+      <div class="highlights-grid">
+        <div class="highlight-card">
+          <div class="highlight-icon">🏗️</div>
+          <h3>Design Systems</h3>
+          <p>Built and maintained comprehensive design systems with Storybook documentation, improving development efficiency across teams.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-icon">🧩</div>
+          <h3>Microfrontend Architecture</h3>
+          <p>Implemented scalable microfrontend solutions using Shadow DOM and Web Components for better team autonomy.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-icon">👥</div>
+          <h3>Mentorship</h3>
+          <p>Mentored junior developers through code reviews, pair programming, and knowledge sharing sessions.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-icon">🔧</div>
+          <h3>Legacy Migration</h3>
+          <p>Successfully migrated JavaScript projects to TypeScript and updated architecture for better maintainability.</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
+import { onMounted } from 'vue'
+
 export default {
-  name: 'ExperienceView'
+  name: 'ExperienceView',
+  setup() {
+    onMounted(() => {
+      // Animate elements on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in')
+          }
+        })
+      }, observerOptions)
+      
+      // Observe all animatable elements
+      document.querySelectorAll('.timeline-item, .skill-category, .highlight-card').forEach(el => {
+        observer.observe(el)
+      })
+
+      // Animate skill bars when they come into view
+      const skillObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const progressBars = entry.target.querySelectorAll('.skill-progress')
+            progressBars.forEach((bar, index) => {
+              setTimeout(() => {
+                bar.classList.add('animate-width')
+              }, index * 100)
+            })
+          }
+        })
+      }, observerOptions)
+
+      document.querySelectorAll('.skill-category').forEach(el => {
+        skillObserver.observe(el)
+      })
+    })
+
+    return {}
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .experience-view {
-  padding: 1rem;
-}
-
-.terminal-window {
-  background: var(--terminal-bg);
-  border: 1px solid var(--terminal-border);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-}
-
-.terminal-header {
-  background: #1a1a1a;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--terminal-border);
+  padding: 2rem;
+  color: var(--text-primary);
+  max-width: 1400px;
+  margin: 0 auto;
   
-  .terminal-title {
-    color: var(--matrix-green);
-    font-size: 0.9rem;
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
 }
 
-.terminal-content {
-  padding: 1.5rem;
+// Hero Section
+.hero-section {
+  margin-bottom: 4rem;
 }
 
-.command-line {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-family: 'Courier New', monospace;
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
   
-  .prompt {
-    color: var(--matrix-green);
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+}
+
+.hero-text {
+  .page-title {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
-  .command {
-    color: var(--cyber-blue);
+  .page-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 600px;
+  }
+}
+
+.experience-summary {
+  .summary-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    gap: 2rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  
+  .summary-stat {
+    text-align: center;
+    
+    .stat-number {
+      display: block;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+// Timeline Section
+.timeline-section {
+  margin-bottom: 4rem;
+}
+
+.timeline-header {
+  position: relative;
+  margin-bottom: 3rem;
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+  }
+  
+  .timeline-line {
+    position: absolute;
+    left: 1.5rem;
+    top: 4rem;
+    bottom: -2rem;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-primary), transparent);
+    
+    @media (max-width: 768px) {
+      left: 1rem;
+    }
   }
 }
 
 .timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  position: relative;
 }
 
-.experience-item {
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
-  padding: 1.5rem;
+.timeline-item {
+  position: relative;
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.6s ease;
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -0.5rem;
+  top: 2rem;
+  
+  @media (max-width: 768px) {
+    left: -1rem;
+  }
+  
+  .marker-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 3px solid var(--accent-primary);
+    position: relative;
+    z-index: 2;
+    
+    &.current-dot {
+      background: var(--accent-primary);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+  }
+  
+  .marker-pulse {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-primary);
+    animation: pulse-ring 2s infinite;
+    opacity: 0;
+  }
+}
+
+.experience-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-left: 3rem;
+  transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    margin-left: 2rem;
+    padding: 1.5rem;
+  }
   
   &:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-    
-    .status-line {
-      color: var(--cyber-blue);
-    }
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent-primary);
   }
 }
 
-.status-line {
+.card-header {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  color: var(--matrix-green);
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
   
-  .status {
-    &.active {
-      color: var(--neon-pink);
-      animation: pulse 2s infinite;
-    }
-    
-    &.completed {
-      color: var(--cyber-blue);
-    }
-  }
-  
-  .date {
-    opacity: 0.7;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 
-.experience-content {
-  .company {
-    color: var(--text-color);
-    font-size: 1.1rem;
+.position-info {
+  .company-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
   
-  .role {
-    color: var(--cyber-blue);
-    font-size: 0.9rem;
+  .role-title {
+    font-size: 1.1rem;
+    color: var(--accent-primary);
+    font-weight: 600;
     margin-bottom: 1rem;
+  }
+  
+  .duration {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+  
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    &.current {
+      background: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+      border: 1px solid #4caf50;
+    }
+  }
+  
+  .date-range {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
   }
 }
 
-.achievements {
-  ul {
+.company-logo {
+  .logo-placeholder {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 1.2rem;
+  }
+}
+
+.card-content {
+  .achievements-section {
+    margin-bottom: 2rem;
+    
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+  }
+  
+  .achievements-list {
     list-style: none;
     padding: 0;
-    margin: 1rem 0;
     
     li {
-      margin-bottom: 0.5rem;
-      display: flex;
-      gap: 0.5rem;
-      color: var(--text-color);
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
       
-      .bullet {
-        color: var(--matrix-green);
+      &:before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent-primary);
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .tech-stack {
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+  }
+  
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .tech-tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--accent-primary);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Skills Section
+.skills-section {
+  margin-bottom: 4rem;
+}
+
+.section-header {
+  margin-bottom: 3rem;
+  text-align: center;
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+  
+  .section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+  }
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-category {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+  .category-icon {
+    font-size: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.skills-list {
+  .skill-item {
+    margin-bottom: 1.5rem;
+    
+    .skill-name {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+  }
+  
+  .skill-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    
+    .skill-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), #8b5cf6);
+      border-radius: 3px;
+      width: 0;
+      transition: width 1s ease;
+      
+      &.animate-width {
+        width: var(--progress-width, 0%);
       }
     }
   }
 }
 
-.tech-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+// Highlights Section
+.highlights-section {
+  margin-bottom: 4rem;
 }
 
-.tech-badge {
-  background: rgba(0, 255, 65, 0.1);
-  border: 1px solid var(--matrix-green);
-  color: var(--cyber-blue);
-  padding: 0.3rem 0.8rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.highlight-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  
+  &.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
   
   &:hover {
-    background: rgba(0, 255, 65, 0.2);
-    border-color: var(--cyber-blue);
+    border-color: var(--accent-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
-}
-
-.skills-section {
-  margin-top: 3rem;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-top: 1rem;
-}
-
-.skill-category {
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid var(--matrix-green);
-  border-radius: 4px;
-  padding: 1.5rem;
-}
-
-.skill-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  color: var(--matrix-green);
-}
-
-.skill-list {
-  list-style: none;
-  padding: 0;
   
-  li {
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    color: var(--text-color);
-    
-    .bullet {
-      color: var(--matrix-green);
-    }
+  .highlight-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  
+  p {
+    color: var(--text-secondary);
+    line-height: 1.6;
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
+// Animations
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
   }
   50% {
-    opacity: 0.5;
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
   }
 }
 
+// Responsive Design
 @media (max-width: 768px) {
-  .experience-view {
-    padding: 0.5rem;
+  .hero-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .timeline-line {
+    left: 1rem;
+  }
+  
+  .timeline-marker {
+    left: -1rem;
+  }
+  
+  .experience-card {
+    margin-left: 2rem;
   }
   
   .skills-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .status-line {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
   }
 }
 </style> 
