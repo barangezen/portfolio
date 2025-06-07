@@ -12,7 +12,12 @@
         </div>
         <div class="profile-card">
           <div class="profile-avatar">
-            <img src="/baran-gezen.jpg" alt="Baran Gezen" class="avatar-image" />
+            <img 
+              src="/baran-gezen.jpg" 
+              alt="Baran Gezen" 
+              class="avatar-image" 
+              @click="openImageModal"
+            />
             <div class="status-indicator"></div>
           </div>
           <div class="profile-info">
@@ -72,9 +77,7 @@
             <span class="tech-tag">Web Components</span>
             <span class="tech-tag">Remix</span>
             <span class="tech-tag">React Query</span>
-            <span class="tech-tag">Redux / Zustand / Valtio</span>
             <span class="tech-tag">Tailwind</span>
-            <span class="tech-tag">Bootstrap</span>
             <span class="tech-tag">Sass</span>
           </div>
         </div>
@@ -87,10 +90,9 @@
           <div class="tech-list">
             <span class="tech-tag node">Node.js</span>
             <span class="tech-tag">Express</span>
-            <span class="tech-tag">Mongoose</span>
             <span class="tech-tag">.NET</span>
             <span class="tech-tag">SQL</span>
-            <span class="tech-tag">Entity Framework</span>
+            <span class="tech-tag">NO SQL</span>
           </div>
         </div>
 
@@ -192,36 +194,97 @@
       </div>
     </section>
   </div>
+
+  <!-- Image Modal -->
+  <teleport to="body">
+    <div 
+      v-if="showImageModal" 
+      class="image-modal" 
+      @click="closeImageModal"
+    >
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" @click.stop>
+        <button class="modal-close" @click="closeImageModal">
+          <span></span>
+          <span></span>
+        </button>
+        <div class="modal-image-container">
+          <img 
+            src="/baran-gezen.jpg" 
+            alt="Baran Gezen - Full Size" 
+            class="modal-image"
+          />
+          <div class="image-info">
+            <h3>Baran Gezen</h3>
+            <p>Full-Stack Software Engineer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 export default {
   name: 'AboutView',
   setup() {
+    const showImageModal = ref(false)
+
+    const openImageModal = () => {
+      showImageModal.value = true
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden'
+    }
+
+    const closeImageModal = () => {
+      showImageModal.value = false
+      // Restore body scroll
+      document.body.style.overflow = ''
+    }
+
+    // Handle ESC key to close modal
+    const handleKeydown = (e) => {
+      if (e.key === 'Escape' && showImageModal.value) {
+        closeImageModal()
+      }
+    }
+
     onMounted(() => {
       // Animate cards on scroll
       const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
       }
-      
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in')
+            entry.target.style.opacity = '1'
+            entry.target.style.transform = 'translateY(0)'
           }
         })
       }, observerOptions)
-      
-      // Observe all animatable elements
-      document.querySelectorAll('.education-card, .tech-category, .skill-card, .personal-card').forEach(el => {
-        observer.observe(el)
+
+      // Observe all cards
+      const cards = document.querySelectorAll('.education-card, .tech-category, .skill-card, .personal-card, .profile-card')
+      cards.forEach(card => {
+        card.style.opacity = '0'
+        card.style.transform = 'translateY(30px)'
+        card.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        observer.observe(card)
       })
+
+      // Add keyboard event listener
+      window.addEventListener('keydown', handleKeydown)
     })
 
-    return {}
+    return {
+      showImageModal,
+      openImageModal,
+      closeImageModal
+    }
   }
 }
 </script>
@@ -704,6 +767,193 @@ export default {
     @media (max-width: 480px) {
       grid-template-columns: 1fr;
     }
+  }
+}
+
+// Profile card cursor style
+.avatar-image {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  &:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+// Image Modal Styles
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  .modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    animation: backdropFadeIn 0.4s ease-out;
+  }
+  
+  .modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 100px rgba(16, 185, 129, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    @media (max-width: 768px) {
+      padding: 1.5rem;
+      max-width: 95vw;
+      max-height: 95vh;
+    }
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+    
+    span {
+      position: absolute;
+      width: 14px;
+      height: 1.5px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s ease;
+      
+      &:first-child {
+        transform: rotate(45deg);
+      }
+      
+      &:last-child {
+        transform: rotate(-45deg);
+      }
+    }
+    
+    &:hover span {
+      background: #ffffff;
+      width: 16px;
+      height: 2px;
+    }
+  }
+  
+  .modal-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    
+    .modal-image {
+      max-width: 100%;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(16, 185, 129, 0.2);
+      transition: all 0.3s ease;
+      
+      @media (max-width: 768px) {
+        max-height: 60vh;
+        border-radius: 12px;
+      }
+    }
+    
+    .image-info {
+      text-align: center;
+      
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      p {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Modal Animations
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 </style> 

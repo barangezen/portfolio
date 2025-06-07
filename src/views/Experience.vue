@@ -231,9 +231,6 @@
               <span class="skill-name">React Native</span>
             </div>
             <div class="skill-tag expert">
-              <span class="skill-name">Redux / Zustand / Valtio</span>
-            </div>
-            <div class="skill-tag expert">
               <span class="skill-name">Tailwind / Sass</span>
             </div>
           </div>
@@ -254,11 +251,8 @@
             <div class="skill-tag advanced">
               <span class="skill-name">SQL</span>
             </div>
-            <div class="skill-tag intermediate">
-              <span class="skill-name">Entity Framework</span>
-            </div>
             <div class="skill-tag advanced">
-              <span class="skill-name">Mongoose</span>
+              <span class="skill-name">NO SQL</span>
             </div>
           </div>
         </div>

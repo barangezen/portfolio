@@ -38,7 +38,6 @@
             class="nav-item"
           >
             <span class="nav-text">{{ route.name }}</span>
-            <div class="nav-indicator"></div>
           </router-link>
         </div>
 
@@ -90,16 +89,7 @@
     <main class="main-content" :class="{ 'content-visible': !isLoading }">
       <div class="router-view-container">
         <router-view v-slot="{ Component, route }">
-          <transition 
-            :name="transitionName"
-            mode="out-in"
-            @before-leave="beforeLeave"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @after-leave="afterLeave"
-          >
-            <component :is="Component" :key="route.path" />
-          </transition>
+          <component :is="Component" :key="route.path" />
         </router-view>
       </div>
     </main>
@@ -137,19 +127,17 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'App',
   setup() {
-    const route = useRoute()
     const router = useRouter()
     const currentRouteName = ref('')
     const isLoading = ref(true)
     const progress = ref(0)
     const isNavVisible = ref(false)
-    const transitionName = ref('fade')
     const scrollProgress = ref(0)
     const cursor = ref(null)
     const mobileNavOpen = ref(false)
@@ -186,8 +174,10 @@ export default {
 
       // Initialize cursor
       if (cursor.value) {
-        cursor.value.style.left = '50px'
-        cursor.value.style.top = '50px'
+        cursor.value.style.left = '100px'
+        cursor.value.style.top = '100px'
+        cursor.value.style.display = 'block'
+        cursor.value.style.visibility = 'visible'
       }
     })
 
@@ -217,21 +207,15 @@ export default {
         const matches = target.matches || target.webkitMatchesSelector || target.mozMatchesSelector || target.msMatchesSelector
         if (!matches) return
         
-        const cursorText = cursor.value.querySelector('.cursor-text')
-        
         // Reset classes
         cursor.value.className = 'custom-cursor'
         
         // Check element type and add appropriate class
         try {
-          if (matches.call(target, 'a, button, .nav-item, .tech-tag, .achievement-tag, .goal-card, .highlight-card, .interest-card, .experience-card, .skill-category')) {
+          if (matches.call(target, 'a, button, .nav-item, .tech-tag, .achievement-tag, .goal-card, .highlight-card, .interest-card, .experience-card, .skill-category, .logo-text')) {
             cursor.value.classList.add('cursor-hover')
-          } else if (matches.call(target, '.logo-text, .page-title, .section-title')) {
-            cursor.value.classList.add('cursor-text')
-            if (cursorText) cursorText.textContent = 'Click'
           } else if (matches.call(target, 'img, .logo-placeholder, .card-icon')) {
             cursor.value.classList.add('cursor-view')
-            if (cursorText) cursorText.textContent = 'View'
           } else if (matches.call(target, '.scroll-progress, .loading-progress')) {
             cursor.value.classList.add('cursor-progress')
           }
@@ -244,14 +228,11 @@ export default {
               className.includes('nav-item') || className.includes('tech-tag') || 
               className.includes('achievement-tag') || className.includes('goal-card') ||
               className.includes('highlight-card') || className.includes('interest-card') ||
-              className.includes('experience-card') || className.includes('skill-category')) {
+              className.includes('experience-card') || className.includes('skill-category') ||
+              className.includes('logo-text')) {
             cursor.value.classList.add('cursor-hover')
-          } else if (className.includes('logo-text') || className.includes('page-title') || className.includes('section-title')) {
-            cursor.value.classList.add('cursor-text')
-            if (cursorText) cursorText.textContent = 'Click'
           } else if (tagName === 'img' || className.includes('logo-placeholder') || className.includes('card-icon')) {
             cursor.value.classList.add('cursor-view')
-            if (cursorText) cursorText.textContent = 'View'
           } else if (className.includes('scroll-progress') || className.includes('loading-progress')) {
             cursor.value.classList.add('cursor-progress')
           }
@@ -262,66 +243,26 @@ export default {
     const handleMouseLeave = () => {
       if (cursor.value) {
         cursor.value.className = 'custom-cursor'
-        const cursorText = cursor.value.querySelector('.cursor-text')
-        if (cursorText) cursorText.textContent = ''
       }
     }
-
-    // Route transition logic - simplified and fast
-    const isTransitioning = ref(false)
-    
-    watch(route, (to, from) => {
-      if (from && to.path !== from.path && !isTransitioning.value) {
-        isTransitioning.value = true
-        transitionName.value = 'fade'
-        
-        // Close mobile nav on route change
-        mobileNavOpen.value = false
-        
-        // Reset transition flag quickly
-        setTimeout(() => {
-          isTransitioning.value = false
-        }, 400)
-      }
-    })
-
-    // Mobile navigation toggle
-    const toggleMobileNav = () => {
-      mobileNavOpen.value = !mobileNavOpen.value
-    }
-
-    // Handle body scroll lock when mobile nav is open
-    watch(mobileNavOpen, (isOpen) => {
-      if (isOpen) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = ''
-      }
-    })
 
     // Handle keyboard events
     const handleKeydown = (e) => {
       if (e.key === 'Escape' && mobileNavOpen.value) {
         mobileNavOpen.value = false
+        document.body.style.overflow = '' // Reset body overflow
       }
     }
 
-    // Simplified transition handlers - no positioning
-    const beforeLeave = () => {
-      // Do nothing - let CSS handle everything
-    }
-
-    const enter = () => {
-      // Do nothing - let CSS handle everything  
-    }
-
-    const afterEnter = () => {
-      // Just scroll to top smoothly
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-
-    const afterLeave = () => {
-      // Do nothing - let CSS handle everything
+    // Mobile navigation toggle
+    const toggleMobileNav = () => {
+      mobileNavOpen.value = !mobileNavOpen.value
+      // Toggle body scroll lock
+      if (mobileNavOpen.value) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
     }
 
     onMounted(() => {
@@ -352,19 +293,11 @@ export default {
       isLoading,
       progress,
       isNavVisible,
-      transitionName,
       scrollProgress,
       cursor,
       mobileNavOpen,
       routes,
-      isTransitioning,
-      toggleMobileNav,
-      beforeLeave,
-      enter,
-      afterEnter,
-      afterLeave,
-      handleMouseEnter,
-      handleMouseLeave
+      toggleMobileNav
     }
   }
 }
@@ -397,6 +330,10 @@ export default {
   box-sizing: border-box;
 }
 
+a, button, input, textarea, select, [role="button"], [tabindex], .clickable {
+  cursor: none !important; /* Force hide default cursor on all interactive elements */
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -408,7 +345,7 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: none;
+  cursor: none; /* Hide default cursor everywhere for our custom cursor */
   
   &::-webkit-scrollbar {
     width: 8px;
@@ -526,6 +463,7 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  cursor: none; /* Hide default cursor for our custom cursor */
 }
 
 // Background Elements
@@ -716,6 +654,7 @@ body {
 .nav-links {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
   
   @media (max-width: 768px) {
     display: none;
@@ -725,116 +664,154 @@ body {
 .nav-item {
   position: relative;
   text-decoration: none;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   font-weight: 500;
   font-size: 0.95rem;
-  padding: 0.875rem 1.75rem;
-  border-radius: 14px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0.875rem 1.5rem;
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.025em;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  backdrop-filter: blur(10px);
   
+  // Glassmorphism base effect
   &:before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
     background: linear-gradient(135deg, 
-      rgba(16, 185, 129, 0.12) 0%, 
-      rgba(6, 214, 160, 0.08) 100%
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 25%,
+      transparent 50%,
+      rgba(16, 185, 129, 0.1) 75%,
+      rgba(6, 214, 160, 0.15) 100%
     );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask-composite: xor;
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border-radius: 14px;
+    transition: all 0.4s ease;
   }
   
+  // Hover glow effect
   &:after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-    transform: translateX(-50%);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 8px var(--glow-primary);
+    inset: -2px;
+    border-radius: 18px;
+    background: radial-gradient(circle at center,
+      rgba(16, 185, 129, 0.15) 0%,
+      rgba(6, 214, 160, 0.1) 30%,
+      transparent 60%
+    );
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
   }
   
   &:hover {
-    color: var(--accent-primary);
-    transform: translateY(-2px);
-    background: rgba(16, 185, 129, 0.1);
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    transform: translateY(-2px) scale(1.02);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 4px 16px rgba(16, 185, 129, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
     &:before {
       opacity: 1;
-      transform: scale(1) translateY(0);
     }
     
     &:after {
-      width: 70%;
+      opacity: 1;
+      transform: scale(1);
     }
     
     .nav-text {
+      color: var(--accent-primary);
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
       transform: translateY(-1px);
-      text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
     }
   }
   
   &.router-link-active {
-    color: var(--accent-primary);
-    background: rgba(16, 185, 129, 0.15);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    color: var(--text-primary);
+    background: linear-gradient(135deg,
+      rgba(16, 185, 129, 0.15) 0%,
+      rgba(6, 214, 160, 0.12) 50%,
+      rgba(89, 232, 198, 0.1) 100%
+    );
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 
+      0 8px 32px rgba(16, 185, 129, 0.25),
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(16, 185, 129, 0.2);
     
     &:before {
       opacity: 1;
-      transform: scale(1) translateY(0);
       background: linear-gradient(135deg, 
-        rgba(16, 185, 129, 0.2) 0%, 
-        rgba(6, 214, 160, 0.15) 100%
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(16, 185, 129, 0.1) 50%,
+        rgba(6, 214, 160, 0.2) 100%
       );
     }
     
     &:after {
-      width: 80%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      box-shadow: 0 0 15px var(--glow-primary);
+      opacity: 0.7;
+      transform: scale(1.1);
+      background: radial-gradient(circle at center,
+        rgba(16, 185, 129, 0.2) 0%,
+        rgba(6, 214, 160, 0.15) 40%,
+        transparent 70%
+      );
     }
     
     .nav-text {
+      color: var(--accent-primary);
       font-weight: 600;
-      text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+      letter-spacing: 0.04em;
     }
     
-    .nav-indicator {
-      opacity: 1;
-      transform: scaleX(1);
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    &:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 12px 40px rgba(16, 185, 129, 0.3),
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(16, 185, 129, 0.3);
     }
   }
   
   .nav-text {
     position: relative;
     z-index: 2;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .nav-indicator {
-    position: absolute;
-    bottom: 6px;
-    left: 50%;
-    width: 24px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-    border-radius: 1px;
-    transform: translateX(-50%) scaleX(0);
-    opacity: 0;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-weight: 500;
+  }
+}
+
+// Active glow animation
+@keyframes activeGlow {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(16, 185, 129, 0.8),
+      0 2px 8px rgba(16, 185, 129, 0.4);
+  }
+  100% {
+    box-shadow: 
+      0 0 30px rgba(16, 185, 129, 1),
+      0 2px 12px rgba(16, 185, 129, 0.6),
+      0 0 60px rgba(16, 185, 129, 0.3);
   }
 }
 
@@ -927,7 +904,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
+  height: 2px;
   background: var(--bg-secondary);
   z-index: 1001;
   
@@ -939,169 +916,159 @@ body {
   }
 }
 
-// Modern Custom Cursor
+// Mobile transition optimizations - faster and lighter
+.router-view-container {
+  min-height: calc(100vh - 80px);
+  contain: layout style;
+  
+  // Mobile-optimized animation - same simple fade
+  > * {
+    opacity: 0;
+    animation: simpleFadeIn 0.2s ease-out forwards;
+  }
+}
+
+// Modern Custom Cursor - Arrow Style with Elegant Effects
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 999999;
   transition: none;
+  display: block;
   
   .cursor-dot {
     position: absolute;
-    width: 8px;
-    height: 8px;
-    background: var(--accent-primary);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.15s ease;
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 20px;
+    height: 20px;
+    transform: translate(-2px, -2px);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    // Arrow cursor shape using CSS
+    &:before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 12px solid #ffffff;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+      transition: all 0.2s ease;
+    }
+    
+    // Subtle glow behind arrow
+    &:after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+    }
   }
   
   .cursor-ring {
-    position: absolute;
-    top: -15px;
-    left: -15px;
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--accent-primary);
-    border-radius: 50%;
-    opacity: 0.4;
-    transition: all 0.15s ease;
-    background: rgba(16, 185, 129, 0.05);
+    display: none; // Don't need ring for arrow style
   }
   
   .cursor-text {
-    position: absolute;
-    top: -40px;
-    left: -25px;
-    padding: 6px 12px;
-    background: var(--accent-primary);
-    border-radius: 20px;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(10px) scale(0.8);
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+    display: none; /* Completely hide text */
   }
   
   .cursor-trail {
     display: none;
   }
 
-  // Hover State - Modern Design
+  // Hover State - Enhanced arrow with glow
   &.cursor-hover {
     .cursor-dot {
-      width: 12px;
-      height: 12px;
-      background: var(--accent-secondary);
-      box-shadow: 0 0 25px rgba(6, 214, 160, 0.8);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-    
-    .cursor-ring {
-      width: 45px;
-      height: 45px;
-      top: -22.5px;
-      left: -22.5px;
-      opacity: 0.7;
-      border-color: var(--accent-secondary);
-      background: rgba(6, 214, 160, 0.1);
-      border-width: 2px;
+      &:before {
+        border-bottom-color: #10b981;
+        filter: drop-shadow(0 3px 12px rgba(16, 185, 129, 0.4));
+        transform: scale(1.1);
+      }
+      
+      &:after {
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+        opacity: 1;
+        transform: scale(1.3);
+      }
     }
   }
 
-  // Text Hover State
+  // Text Hover State - Subtle blue accent
   &.cursor-text {
     .cursor-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-tertiary);
-      box-shadow: 0 0 20px rgba(89, 232, 198, 0.7);
-    }
-    
-    .cursor-ring {
-      border-color: var(--accent-tertiary);
-      background: rgba(89, 232, 198, 0.08);
-      opacity: 0.6;
-    }
-    
-    .cursor-text {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      background: var(--accent-tertiary);
-      box-shadow: 0 4px 20px rgba(89, 232, 198, 0.4);
+      &:before {
+        border-bottom-color: #06d6a0;
+        filter: drop-shadow(0 2px 10px rgba(6, 214, 160, 0.3));
+        transform: scale(1.05);
+      }
+      
+      &:after {
+        background: radial-gradient(circle, rgba(6, 214, 160, 0.15) 0%, transparent 70%);
+        opacity: 0.8;
+        transform: scale(1.2);
+      }
     }
   }
 
-  // View State
+  // View State - Special effect for images
   &.cursor-view {
     .cursor-dot {
-      width: 10px;
-      height: 10px;
-      background: var(--accent-primary);
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
-    }
-    
-    .cursor-ring {
-      width: 40px;
-      height: 40px;
-      top: -20px;
-      left: -20px;
-      border-style: dashed;
-      border-width: 2px;
-      opacity: 0.8;
-      animation: slowRotate 3s linear infinite;
-    }
-    
-    .cursor-text {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      background: var(--accent-primary);
+      &:before {
+        border-bottom-color: #59e8c6;
+        filter: drop-shadow(0 3px 15px rgba(89, 232, 198, 0.5));
+        transform: scale(1.15);
+      }
+      
+      &:after {
+        background: radial-gradient(circle, rgba(89, 232, 198, 0.25) 0%, transparent 70%);
+        opacity: 1;
+        transform: scale(1.4);
+        animation: gentleRotate 3s linear infinite;
+      }
     }
   }
 
-  // Progress State
+  // Progress State - Minimal loading indicator
   &.cursor-progress {
     .cursor-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-warm);
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.7);
-    }
-    
-    .cursor-ring {
-      width: 25px;
-      height: 25px;
-      top: -12.5px;
-      left: -12.5px;
-      border-color: var(--accent-warm);
-      opacity: 0.6;
-      animation: modernPulse 1.5s ease-in-out infinite;
+      &:before {
+        border-bottom-color: #ffffff;
+        filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.2));
+        animation: subtlePulse 1.5s ease-in-out infinite;
+      }
+      
+      &:after {
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        opacity: 0.7;
+        animation: subtlePulse 1.5s ease-in-out infinite reverse;
+      }
     }
   }
 }
 
-// Cursor Animations
-@keyframes rotate {
+// Modern Cursor Animations - Smooth & Elegant
+@keyframes gentleRotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-@keyframes cursor-pulse {
+@keyframes subtlePulse {
   0%, 100% { 
-    transform: scale(0.8);
-    opacity: 0.6;
+    transform: scale(1);
+    opacity: 0.5;
   }
   50% { 
     transform: scale(1.2);
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 
@@ -1167,12 +1134,24 @@ body {
   }
 }
 
-// Page Transition Container - clean and simple
+// Router view container - with CSS-only animation
 .router-view-container {
   position: relative;
   width: 100%;
   min-height: calc(100vh - 100px);
-  will-change: opacity;
+  
+  // Simple fade-in animation for content
+  > * {
+    opacity: 0;
+    animation: simpleFadeIn 0.25s ease-out 0.05s forwards;
+  }
+}
+
+// Simple fade-in animation - very lightweight
+@keyframes simpleFadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 // Smooth scroll behavior for internal links
@@ -1237,6 +1216,14 @@ html {
 
 // Responsive Design
 @media (max-width: 768px) {
+  body {
+    cursor: auto !important; /* Restore normal cursor on mobile */
+  }
+  
+  a, button, input, textarea, select, [role="button"], [tabindex], .clickable {
+    cursor: auto !important; /* Restore normal cursor for interactive elements on mobile */
+  }
+  
   .modern-nav {
     padding: 1rem;
   }
@@ -1245,8 +1232,12 @@ html {
     padding-top: 80px;
   }
   
+  .portfolio-container {
+    cursor: auto !important; /* Restore normal cursor on mobile */
+  }
+  
   .custom-cursor {
-    display: none;
+    display: none !important; /* Force hide on mobile */
   }
   
   ::-webkit-scrollbar {
@@ -1256,20 +1247,24 @@ html {
   .scroll-progress {
     height: 2px;
   }
-  
-  // Mobile transition optimizations
-  .slide-left-enter-active,
-  .slide-left-leave-active,
-  .slide-right-enter-active,
-  .slide-right-leave-active,
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+// Touch device detection - hide cursor on touch devices
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto !important;
   }
   
-  .router-view-container {
-    min-height: calc(100vh - 80px);
-    contain: layout style;
+  a, button, input, textarea, select, [role="button"], [tabindex], .clickable {
+    cursor: auto !important;
+  }
+  
+  .portfolio-container {
+    cursor: auto !important;
+  }
+  
+  .custom-cursor {
+    display: none !important;
   }
 }
 
@@ -1293,23 +1288,6 @@ html {
   
   .scroll-progress .progress-bar {
     background: var(--text-primary);
-  }
-}
-
-// Modern Cursor Animations
-@keyframes slowRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes modernPulse {
-  0%, 100% { 
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  50% { 
-    transform: scale(1.3);
-    opacity: 0.9;
   }
 }
 
